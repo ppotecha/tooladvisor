@@ -239,6 +239,117 @@ def get_current_title(path: Path) -> str:
     match = re.search(r'<h1>(.*?)</h1>', content)
     return match.group(1).strip() if match else ""
 
+LIGHT_THEME_CSS = '''    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --bg2: #f7f6f3; --bg3: #eeede9; --bg4: #e4e2dc;
+      --border: rgba(0,0,0,0.08); --border-hover: rgba(0,0,0,0.16);
+      --text: #1a1916; --muted: #6b6860; --faint: #9b9890;
+      --accent: #0a7a5a; --accent-light: rgba(10,122,90,0.07); --accent-hover: #085e45;
+      --radius: 10px;
+    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 58px; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--text); }
+    .logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
+    .nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); padding: 6px 12px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .nav-links a:hover { color: var(--text); background: var(--bg3); }
+    .nav-cta { background: var(--accent) !important; color: #fff !important; font-weight: 700 !important; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: 88px 24px 96px; }
+    .article-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+    .article-pill::before { content: ''; width: 4px; height: 4px; background: var(--accent); border-radius: 99px; }
+    h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
+    .article-meta { font-size: 13px; color: var(--faint); display: flex; gap: 20px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border); font-family: 'Geist Mono', monospace; }
+    .article-body h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin: 48px 0 16px; line-height: 1.2; }
+    .article-body h3 { font-size: 17px; font-weight: 700; margin: 32px 0 12px; color: var(--text); }
+    .article-body p { margin-bottom: 20px; color: var(--muted); }
+    .article-body ul, .article-body ol { margin: 0 0 20px 22px; }
+    .article-body li { margin-bottom: 8px; color: var(--muted); }
+    .article-body strong { font-weight: 700; color: var(--text); }
+    .tldr { border-left: 2px solid var(--accent); background: var(--bg2); padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 32px 0; font-size: 14px; }
+    .tldr strong { display: block; margin-bottom: 6px; font-weight: 700; color: var(--accent); }
+    .tool-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 28px 0; background: var(--bg2); transition: border-color 0.2s; }
+    .tool-card:hover { border-color: var(--border-hover); }
+    .tool-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .tool-name { font-size: 17px; font-weight: 700; }
+    .tool-rating { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--accent); background: var(--accent-light); border: 1px solid rgba(10,122,90,0.18); padding: 3px 8px; border-radius: 5px; }
+    .tool-desc { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+    .tool-cta { display: inline-block; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; padding: 9px 18px; border-radius: 7px; transition: opacity 0.15s; }
+    .tool-cta:hover { opacity: 0.85; text-decoration: none; }
+    .tool-pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; font-size: 13px; }
+    .pros h4 { font-weight: 700; margin-bottom: 8px; color: #166534; }
+    .cons h4 { font-weight: 700; margin-bottom: 8px; color: #991b1b; }
+    .pros li, .cons li { margin-bottom: 6px; list-style: none; color: var(--muted); }
+    .pros li::before { content: '\\2713 '; color: #166534; }
+    .cons li::before { content: '\\2717 '; color: #991b1b; }
+    .comparison-table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 13px; }
+    .comparison-table th { text-align: left; padding: 10px 14px; background: var(--bg3); border: 1px solid var(--border); font-weight: 700; color: var(--text); }
+    .comparison-table td { padding: 10px 14px; border: 1px solid var(--border); vertical-align: top; color: var(--muted); }
+    .comparison-table tr:nth-child(even) td { background: var(--bg2); }
+    .disclosure { font-size: 12px; color: var(--faint); border-top: 1px solid var(--border); padding-top: 20px; margin-top: 48px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.6; }
+    .disclosure-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    footer { border-top: 1px solid var(--border); padding: 40px 32px; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: var(--text); }
+    .footer-logo-mark { width: 24px; height: 24px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; }
+    .footer-note { font-size: 12px; color: var(--faint); }
+    @media (max-width: 700px) {
+      nav { padding: 0 20px; }
+      .hamburger { display: flex; }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 58px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 16px 20px 24px; gap: 4px; z-index: 99; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+      .nav-links.open { display: flex; }
+      .nav-links li a { display: block; padding: 10px 12px; font-size: 15px; }
+      .tool-pros-cons { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+    }'''
+
+LIGHT_THEME_FONTS = '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">'
+
+def fix_article_theme(path: Path, preview: bool) -> bool:
+    """Replace the entire <style> block with the light theme CSS."""
+    content = path.read_text(encoding='utf-8', errors='replace')
+    original = content
+
+    # Replace style block
+    content = re.sub(
+        r'<style>.*?</style>',
+        f'<style>\n{LIGHT_THEME_CSS}\n  </style>',
+        content,
+        flags=re.DOTALL,
+        count=1
+    )
+
+    # Ensure correct font is loaded
+    if 'Plus+Jakarta+Sans' not in content:
+        content = content.replace(
+            '</head>',
+            f'  {LIGHT_THEME_FONTS}\n</head>'
+        )
+        # Remove old Syne font if present
+        content = re.sub(r'<link[^>]*Syne[^>]*>\n?', '', content)
+
+    # Fix nav - update About link if missing
+    if '/about.html' not in content and 'nav-links' in content:
+        content = content.replace(
+            '<li><a href="/articles/reviews.html" class="nav-cta">Browse tools',
+            '<li><a href="/about.html">About</a></li>\n    <li><a href="/articles/reviews.html" class="nav-cta">Browse tools'
+        )
+
+    if not preview and content != original:
+        path.write_text(content, encoding='utf-8')
+    return content != original
+
 def fix_markdown_in_body(content: str) -> str:
     """Convert any leftover markdown syntax to proper HTML."""
 
@@ -470,7 +581,9 @@ def main():
             print(f"    Category: {new_category}")
         else:
             was_changed = apply_fixes_to_file(path, new_title, new_category, preview=False)
-            if was_changed:
+            # Always fix theme on all articles
+            theme_changed = fix_article_theme(path, preview=False)
+            if was_changed or theme_changed:
                 changed += 1
                 print(f"  Fixed: {path.name}")
                 if not args.categories:
