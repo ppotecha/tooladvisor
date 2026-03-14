@@ -211,7 +211,7 @@ def load_keywords() -> list[str]:
             keywords.append(line)
     return keywords
 
-def find_article_path(keyword: str) -> Path | None:
+def find_article_path(keyword: str):
     """Find the article file for a given keyword."""
     # Try a few slug variants
     candidates = [
