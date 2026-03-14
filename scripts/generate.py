@@ -152,14 +152,95 @@ def estimate_read_time(html: str) -> int:
     return max(3, round(words / 200))
 
 def extract_title(keyword: str) -> str:
-    """Turn a keyword into a proper title."""
+    """Turn a keyword into a proper title with smart capitalization."""
     title = keyword.strip()
-    if not any(title.lower().startswith(w) for w in ['best', 'top', 'how', 'what', 'why', 'is']):
-        title = f"Best {title.title()}"
+
+    # Only prepend "Best" for list/roundup style keywords, not comparisons or reviews
+    comparison_words = ['vs', 'versus', 'compared', 'comparison', 'or ']
+    review_words = ['review', 'is it worth', 'worth it', 'pricing', 'alternative']
+    how_words = ['how to', 'how do', 'what is', 'what are', 'why ', 'when to']
+
+    kw_lower = title.lower()
+    is_comparison = any(w in kw_lower for w in comparison_words)
+    is_review = any(w in kw_lower for w in review_words)
+    is_how = any(w in kw_lower for w in how_words)
+    already_titled = any(kw_lower.startswith(w) for w in ['best', 'top', 'the ', 'why ', 'how ', 'what ', 'is '])
+
+    if not already_titled and not is_comparison and not is_review and not is_how:
+        title = f"Best {title}"
+
+    # Smart title case — preserve known brand names
+    brands = ['ActiveCampaign', 'ClickUp', 'Apollo.io', 'AdCreative.ai', 'Reclaim.ai',
+              'HubSpot', 'Manychat', 'PandaDoc', 'ElevenLabs', 'Murf AI', 'Brevo',
+              'AWeber', 'Reply.io', 'Instantly', 'Leadpages', 'Zapier', 'Tidio',
+              'Intercom', 'FreshBooks', 'QuickBooks', 'Grammarly', 'Notion', 'Loom',
+              'Descript', 'Synthesia', 'Castmagic', 'Brand24', 'Folk', 'Close',
+              'Writesonic', 'Copy.ai', 'ChatGPT', 'OpenAI', 'Canva', 'Midjourney',
+              'ClickFunnels', 'DocuSign']
+
+    # Title case the whole thing
+    titled = title.title()
+
+    # Restore brand names exactly
+    for brand in brands:
+        titled = re.sub(re.escape(brand), brand, titled, flags=re.IGNORECASE)
+
+    # Fix common small words that shouldn't be title-cased mid-sentence
+    for word in [' Vs ', ' And ', ' For ', ' The ', ' Of ', ' In ', ' To ', ' A ', ' An ', ' Or ']:
+        titled = titled.replace(word, word.lower())
+    # But capitalise first word always
+    titled = titled[0].upper() + titled[1:] if titled else titled
+
     year = datetime.now().year
-    if str(year) not in title:
-        title = f"{title} ({year})"
-    return title
+    if str(year) not in titled:
+        titled = f"{titled} ({year})"
+
+    return titled
+
+def get_category(keyword: str) -> str:
+    """Map a keyword to a filter-friendly category."""
+    kw = keyword.lower()
+
+    # Order matters — more specific matches first
+    if any(w in kw for w in ['vs', 'versus', 'compared', 'comparison', 'alternatives', 'or ']):
+        # Comparisons — assign to the most relevant category based on topic
+        if any(w in kw for w in ['email', 'activecampaign', 'brevo', 'aweber', 'mailchimp', 'instantly', 'reply', 'outreach', 'cold email', 'newsletter']):
+            return 'Email'
+        if any(w in kw for w in ['clickup', 'notion', 'project', 'task', 'zapier', 'make', 'automat']):
+            return 'Automation'
+        if any(w in kw for w in ['crm', 'hubspot', 'apollo', 'folk', 'close', 'sales', 'lead']):
+            return 'Sales'
+        if any(w in kw for w in ['invoice', 'freshbooks', 'quickbooks', 'account', 'bookkeep', 'financ', 'payment']):
+            return 'Finance'
+        if any(w in kw for w in ['video', 'audio', 'voice', 'podcast', 'loom', 'descript', 'murf', 'eleven', 'castmagic']):
+            return 'Video'
+        if any(w in kw for w in ['design', 'image', 'graphic', 'canva', 'adcreative', 'social media']):
+            return 'Design'
+        if any(w in kw for w in ['chat', 'support', 'tidio', 'intercom', 'customer']):
+            return 'Customer Support'
+        if any(w in kw for w in ['writ', 'copy', 'blog', 'content', 'seo', 'article']):
+            return 'Writing'
+
+    if any(w in kw for w in ['email', 'activecampaign', 'brevo', 'aweber', 'mailchimp', 'newsletter', 'cold email', 'instantly', 'reply.io', 'outreach', 'follow-up', 'follow up']):
+        return 'Email'
+    if any(w in kw for w in ['invoice', 'account', 'bookkeep', 'financ', 'payment', 'expense', 'freshbooks', 'quickbooks', 'tax']):
+        return 'Finance'
+    if any(w in kw for w in ['automat', 'zapier', 'make', 'workflow', 'schedul', 'project', 'clickup', 'notion', 'reclaim', 'task', 'meeting', 'calendar']):
+        return 'Automation'
+    if any(w in kw for w in ['chat', 'support', 'tidio', 'intercom', 'live chat', 'helpdesk', 'customer service']):
+        return 'Customer Support'
+    if any(w in kw for w in ['crm', 'sales', 'lead', 'apollo', 'hubspot', 'folk', 'close', 'pandadoc', 'prospect', 'pipeline']):
+        return 'Sales'
+    if any(w in kw for w in ['video', 'audio', 'voice', 'podcast', 'loom', 'descript', 'murf', 'eleven', 'castmagic', 'voiceover', 'transcript']):
+        return 'Video'
+    if any(w in kw for w in ['design', 'image', 'graphic', 'canva', 'adcreative', 'ad creative', 'social media', 'visual', 'midjourney', 'logo', 'banner', 'landing page', 'leadpages', 'manychat']):
+        return 'Design'
+    if any(w in kw for w in ['analyt', 'data', 'report', 'dashboard', 'insight', 'brand24', 'monitor']):
+        return 'Analytics'
+    if any(w in kw for w in ['writ', 'copy', 'blog', 'content', 'seo', 'article', 'grammarly', 'writesonic', 'rytr']):
+        return 'Writing'
+
+    return 'AI Tools'
 
 def generate_article(keyword: str, client: anthropic.Anthropic) -> dict:
     """Call Claude API and return article data."""
@@ -183,22 +264,7 @@ def generate_article(keyword: str, client: anthropic.Anthropic) -> dict:
     if not meta_desc:
         meta_desc = f"Honest comparison of {keyword}. Find the best tool for your small business."
 
-    # Guess category from keyword
-    category_map = {
-        'writ': 'Content', 'copy': 'Content', 'blog': 'Content',
-        'invoic': 'Finance', 'account': 'Finance', 'payment': 'Finance',
-        'email': 'Email & Outreach', 'outreach': 'Email & Outreach',
-        'design': 'Design', 'image': 'Design', 'video': 'Design',
-        'schedul': 'Operations', 'automat': 'Operations', 'workflow': 'Operations',
-        'support': 'Customer Support', 'chat': 'Customer Support',
-        'data': 'Analytics', 'analyt': 'Analytics',
-    }
-    category = 'AI Tools'
-    kw_lower = keyword.lower()
-    for key, cat in category_map.items():
-        if key in kw_lower:
-            category = cat
-            break
+    category = get_category(keyword)
 
     return {
         "keyword": keyword,
