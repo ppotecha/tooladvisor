@@ -4,308 +4,176 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ToolAdvisor — AI Tool Reviews for Small Businesses & Startups</title>
-  <meta name="description" content="Honest, independent reviews of AI tools for small businesses and startups. Find the right software for writing, email, automation, sales, and more — without the enterprise price tag.">
+  <meta name="description" content="Honest, independent reviews of AI tools for small businesses and startups. Find the right software without the enterprise price tag.">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <meta property="og:title" content="ToolAdvisor - Find the Best AI Tools">
-  <meta property="og:description" content="Honest, independent reviews of AI tools for small businesses. No sponsored rankings. Just clear answers.">
+  <meta property="og:title" content="ToolAdvisor — AI Tool Reviews for Small Businesses">
+  <meta property="og:description" content="Honest, independent reviews of AI tools for small businesses and startups. No sponsored rankings. Just clear answers.">
   <meta property="og:image" content="https://tooladvisor.tech/og-image.png">
   <meta property="og:url" content="https://tooladvisor.tech">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://tooladvisor.tech/og-image.png">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">�  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">�  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">�  <meta property="og:title" content="ToolAdvisor — Find the Best AI Tools">�  <meta property="og:description" content="Honest, independent reviews of AI tools for small businesses. No sponsored rankings. Just clear answers.">�  <meta property="og:image" content="https://tooladvisor.tech/og-image.png">�  <meta property="og:url" content="https://tooladvisor.tech">�  <meta property="og:type" content="website">�  <meta name="twitter:card" content="summary_large_image">�  <meta name="twitter:image" content="https://tooladvisor.tech/og-image.png">�
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #080808;
-      --bg2: #0f0f0f;
-      --bg3: #161616;
-      --bg4: #1e1e1e;
-      --border: rgba(255,255,255,0.07);
-      --border-hover: rgba(255,255,255,0.14);
-      --text: #f0f0f0;
-      --muted: #888;
-      --faint: #555;
-      --green: #00e5a0;
-      --green-dim: rgba(0,229,160,0.08);
-      --green-glow: rgba(0,229,160,0.15);
+      --bg: #ffffff; --bg2: #f7f6f3; --bg3: #eeede9; --bg4: #e4e2dc;
+      --border: rgba(0,0,0,0.08); --border-hover: rgba(0,0,0,0.16);
+      --text: #1a1916; --muted: #6b6860; --faint: #9b9890;
+      --accent: #0a7a5a; --accent-light: rgba(10,122,90,0.07); --accent-hover: #085e45;
       --radius: 10px;
     }
-
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
     a { color: inherit; text-decoration: none; }
-
-    /* noise */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 999; opacity: 0.5;
-    }
 
     /* NAV */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 58px;
+      padding: 0 32px; height: 60px;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      background: rgba(8,8,8,0.88);
-      backdrop-filter: blur(20px);
     }
-    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
-    .logo-mark {
-      width: 28px; height: 28px; background: var(--green); border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 800; color: #000;
-    }
-    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
-    .nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); padding: 6px 12px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
-    .nav-links a:hover { color: var(--text); background: var(--bg3); }
-    .nav-cta { background: var(--green) !important; color: #000 !important; font-weight: 700 !important; }
-    .nav-cta:hover { opacity: 0.88 !important; background: var(--green) !important; }
-
-    /* HERO */
-    .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 120px 24px 80px; text-align: center; position: relative; overflow: hidden;
-    }
-    .hero-glow {
-      position: absolute; top: 25%; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 400px;
-      background: radial-gradient(ellipse, rgba(0,229,160,0.055) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      border: 1px solid var(--border); background: var(--bg3);
-      border-radius: 99px; padding: 6px 14px 6px 8px;
-      font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 36px;
-      animation: fadeUp 0.5s ease both;
-    }
-    .pulse {
-      width: 18px; height: 18px; background: var(--green-dim);
-      border: 1px solid rgba(0,229,160,0.3); border-radius: 99px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .pulse::after { content: ''; width: 6px; height: 6px; background: var(--green); border-radius: 99px; }
-    .hero h1 {
-      font-size: clamp(52px, 9vw, 96px); font-weight: 800; line-height: 1.0;
-      letter-spacing: -3.5px; max-width: 860px;
-      animation: fadeUp 0.5s ease 0.08s both;
-    }
-    .accent { color: var(--green); display: block; }
-    .hero-sub {
-      font-size: clamp(15px, 2vw, 18px); color: var(--muted); max-width: 500px;
-      margin: 24px auto 44px; font-weight: 400; line-height: 1.75;
-      animation: fadeUp 0.5s ease 0.16s both;
-    }
-    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.5s ease 0.24s both; }
-
-    .btn-primary {
-      background: var(--green); color: #000; font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 8px;
-      border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-      transition: opacity 0.15s, transform 0.15s;
-    }
-    .btn-primary:hover { opacity: 0.87; transform: translateY(-1px); }
-    .btn-secondary {
-      background: var(--bg3); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 14px; font-weight: 600; padding: 13px 28px; border-radius: 8px;
-      border: 1px solid var(--border); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-      transition: border-color 0.15s, transform 0.15s;
-    }
-    .btn-secondary:hover { border-color: var(--border-hover); transform: translateY(-1px); }
-
-    /* STATS */
-    .stats-bar {
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      background: var(--bg2); padding: 20px 0;
-    }
-    .stats-inner {
-      max-width: 1100px; margin: 0 auto; padding: 0 32px;
-      display: flex; justify-content: space-between; align-items: center; gap: 24px;
-    }
-    .stat-num { font-size: 26px; font-weight: 800; letter-spacing: -1px; display: block; }
-    .stat-label { font-size: 12px; color: var(--faint); margin-top: 2px; }
-    .stat-div { width: 1px; height: 36px; background: var(--border); }
-
-    /* SECTIONS */
-    .section { max-width: 1100px; margin: 0 auto; padding: 20px 32px 80px; }
-    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
-    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
-    .view-all { font-size: 13px; color: var(--green); font-weight: 500; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
-    .view-all:hover { gap: 8px; }
-
-    /* SEARCH */
-    .search-section { max-width: 1100px; margin: 0 auto; padding: 80px 32px 40px; }
-    .search-wrap { position: relative; max-width: 560px; }
-    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--faint); font-size: 18px; }
-    .search-input {
-      width: 100%; background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px 16px 14px 46px;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: var(--text); outline: none;
-      transition: border-color 0.2s;
-    }
-    .search-input::placeholder { color: var(--faint); }
-    .search-input:focus { border-color: rgba(0,229,160,0.4); }
-
-    /* CATEGORIES */
-    .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .cat-card {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 18px 20px; cursor: pointer;
-      display: flex; align-items: center; gap: 14px;
-      transition: border-color 0.2s, background 0.2s, transform 0.2s;
-    }
-    .cat-card:hover { border-color: var(--border-hover); background: var(--bg3); transform: translateY(-2px); }
-    .cat-card:hover .cat-icon-wrap { background: var(--green-dim); border-color: rgba(0,229,160,0.25); }
-    .cat-card:hover .cat-icon-wrap svg { stroke: var(--green); }
-    .cat-icon-wrap {
-      width: 36px; height: 36px; flex-shrink: 0;
-      background: var(--bg4); border: 1px solid var(--border);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .cat-icon-wrap svg { width: 16px; height: 16px; stroke: var(--faint); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
-    .cat-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-    .cat-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cat-count { font-size: 11px; color: var(--faint); font-family: 'Geist Mono', monospace; }
-
-    /* MARQUEE */
-    .marquee-wrap {
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      background: var(--bg2); padding: 14px 0; overflow: hidden;
-    }
-    .marquee-track { display: flex; gap: 36px; animation: marquee 28s linear infinite; width: max-content; }
-    .marquee-item {
-      font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--faint);
-      white-space: nowrap; display: flex; align-items: center; gap: 10px;
-    }
-    .marquee-item::after { content: '·'; color: var(--bg4); font-size: 16px; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    /* ARTICLES */
-    .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .article-card {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 26px; display: flex; flex-direction: column;
-      transition: border-color 0.2s, transform 0.2s; cursor: pointer;
-    }
-    .article-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
-    .article-card.featured { grid-column: span 2; background: var(--bg3); border-color: rgba(0,229,160,0.12); }
-    .article-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-      color: var(--green); margin-bottom: 14px;
-    }
-    .article-pill::before { content: ''; width: 4px; height: 4px; background: var(--green); border-radius: 99px; }
-    .article-card h3 { font-size: 17px; font-weight: 700; line-height: 1.35; letter-spacing: -0.3px; margin-bottom: 10px; }
-    .article-card.featured h3 { font-size: 22px; }
-    .article-card p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; margin-bottom: 18px; }
-    .article-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      padding-top: 16px; border-top: 1px solid var(--border);
-    }
-    .article-meta { font-size: 12px; color: var(--faint); display: flex; gap: 12px; }
-    .article-arrow {
-      width: 28px; height: 28px; background: var(--bg4); border: 1px solid var(--border);
-      border-radius: 6px; display: flex; align-items: center; justify-content: center;
-      font-size: 13px; color: var(--muted); transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-    .article-card:hover .article-arrow { background: var(--green); color: #000; border-color: var(--green); }
-
-    /* SPOTLIGHT */
-    .spotlight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .spotlight-card {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 22px; transition: border-color 0.2s, transform 0.2s; cursor: pointer;
-    }
-    .spotlight-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
-    .spotlight-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .spotlight-name { font-size: 15px; font-weight: 700; }
-    .spotlight-score {
-      font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--green);
-      background: var(--green-dim); border: 1px solid rgba(0,229,160,0.18);
-      padding: 3px 8px; border-radius: 5px;
-    }
-    .spotlight-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
-    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
-    .tag {
-      font-size: 11px; font-weight: 500; color: var(--faint); background: var(--bg3);
-      border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;
-    }
-
-    /* CTA */
-    .cta-band { max-width: 1100px; margin: 0 auto 80px; padding: 0 32px; }
-    .cta-inner {
-      background: var(--bg3); border: 1px solid rgba(0,229,160,0.14); border-radius: 16px;
-      padding: 52px 60px; display: flex; align-items: center; justify-content: space-between;
-      gap: 40px; position: relative; overflow: hidden;
-    }
-    .cta-inner::before {
-      content: ''; position: absolute; top: -80px; right: -80px; width: 340px; height: 340px;
-      background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-text h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.7px; margin-bottom: 10px; }
-    .cta-text p { font-size: 15px; color: var(--muted); max-width: 420px; }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border); padding: 40px 32px;
-      max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between; gap: 20px;
-    }
-    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
-    .footer-logo-mark {
-      width: 24px; height: 24px; background: var(--green); border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #000;
-    }
-    .footer-note { font-size: 12px; color: var(--faint); }
-    .footer-disclosure { font-size: 11px; color: var(--faint); max-width: 360px; text-align: right; line-height: 1.6; }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* HAMBURGER */
-    .hamburger {
-      display: none; flex-direction: column; justify-content: center; gap: 5px;
-      background: none; border: none; cursor: pointer; padding: 4px; z-index: 101;
-    }
-    .hamburger span {
-      display: block; width: 22px; height: 2px; background: var(--text);
-      border-radius: 2px; transition: transform 0.2s, opacity 0.2s;
-    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .logo-mark { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { font-size: 13px; font-weight: 600; color: var(--muted); padding: 6px 14px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .nav-links a:hover { color: var(--text); background: var(--bg2); }
+    .nav-cta { background: var(--accent) !important; color: #fff !important; font-weight: 700 !important; }
+    .nav-cta:hover { background: var(--accent-hover) !important; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
     .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+    /* HERO */
+    .hero {
+      max-width: 1100px; margin: 0 auto; padding: 80px 32px 72px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-light); border: 1px solid rgba(10,122,90,0.15);
+      padding: 5px 12px; border-radius: 99px; margin-bottom: 20px;
+    }
+    .hero-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 99px; }
+    .hero h1 { font-size: clamp(36px, 4.5vw, 54px); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub { font-size: 17px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 420px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary { background: var(--accent); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; padding: 13px 26px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.15s, transform 0.15s; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; padding: 13px 26px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.15s, transform 0.15s; }
+    .btn-secondary:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+
+    /* HERO CARD */
+    .hero-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 12px; }
+    .hero-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .hero-stat-label { font-size: 13px; color: var(--muted); }
+    .hero-stat-val { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .hero-stat-badge { font-size: 11px; font-weight: 600; background: #dcfce7; color: #15803d; padding: 3px 9px; border-radius: 99px; }
+
+    /* STATS BAR */
+    .stats-bar { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); }
+    .stats-inner { max-width: 1100px; margin: 0 auto; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+    .stat-num { font-size: 26px; font-weight: 800; letter-spacing: -1px; display: block; }
+    .stat-label { font-size: 12px; color: var(--faint); margin-top: 2px; }
+    .stat-div { width: 1px; height: 36px; background: var(--border); }
+
+    /* SEARCH */
+    .search-section { max-width: 1100px; margin: 0 auto; padding: 64px 32px 32px; }
+    .search-wrap { position: relative; max-width: 560px; }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--faint); font-size: 17px; }
+    .search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px 13px 44px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .search-input::placeholder { color: var(--faint); }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+    /* SECTIONS */
+    .section { max-width: 1100px; margin: 0 auto; padding: 16px 32px 72px; }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+    .view-all { font-size: 13px; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
+    .view-all:hover { gap: 8px; }
+
+    /* CATEGORIES */
+    .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .cat-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+    .cat-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(10,122,90,0.08); transform: translateY(-2px); }
+    .cat-card:hover .cat-icon-wrap { background: var(--accent-light); border-color: rgba(10,122,90,0.2); }
+    .cat-card:hover .cat-icon-wrap svg { stroke: var(--accent); }
+    .cat-icon-wrap { width: 36px; height: 36px; flex-shrink: 0; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s; }
+    .cat-icon-wrap svg { width: 16px; height: 16px; stroke: var(--faint); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
+    .cat-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .cat-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-count { font-size: 11px; color: var(--faint); font-family: 'Geist Mono', monospace; }
+
+    /* MARQUEE */
+    .marquee-wrap { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); padding: 14px 0; overflow: hidden; }
+    .marquee-track { display: flex; gap: 36px; animation: marquee 30s linear infinite; width: max-content; }
+    .marquee-item { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--faint); white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+    .marquee-item::after { content: '·'; font-size: 18px; color: var(--bg4); }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ARTICLES */
+    .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .article-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; display: flex; flex-direction: column; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; cursor: pointer; }
+    .article-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(10,122,90,0.08); transform: translateY(-2px); }
+    .article-card.featured { grid-column: span 2; background: var(--bg2); border-color: rgba(10,122,90,0.2); }
+    .article-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+    .article-pill::before { content: ''; width: 4px; height: 4px; background: var(--accent); border-radius: 99px; }
+    .article-card h3 { font-size: 17px; font-weight: 700; line-height: 1.35; letter-spacing: -0.3px; margin-bottom: 10px; }
+    .article-card.featured h3 { font-size: 22px; }
+    .article-card p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; margin-bottom: 18px; }
+    .article-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border); }
+    .article-meta { font-size: 12px; color: var(--faint); display: flex; gap: 12px; font-family: 'Geist Mono', monospace; }
+    .article-arrow { width: 28px; height: 28px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); transition: background 0.15s, color 0.15s, border-color 0.15s; }
+    .article-card:hover .article-arrow { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* SPOTLIGHT */
+    .spotlight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .spotlight-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; cursor: pointer; }
+    .spotlight-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(10,122,90,0.08); transform: translateY(-2px); }
+    .spotlight-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .spotlight-name { font-size: 15px; font-weight: 700; }
+    .spotlight-score { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--accent); background: var(--accent-light); border: 1px solid rgba(10,122,90,0.15); padding: 3px 8px; border-radius: 5px; font-weight: 600; }
+    .spotlight-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag { font-size: 11px; font-weight: 500; color: var(--faint); background: var(--bg2); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px; }
+
+    /* CTA BAND */
+    .cta-band { max-width: 1100px; margin: 0 auto 80px; padding: 0 32px; }
+    .cta-inner { background: var(--accent); border-radius: 16px; padding: 52px 60px; display: flex; align-items: center; justify-content: space-between; gap: 40px; position: relative; overflow: hidden; }
+    .cta-inner::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; background: rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none; }
+    .cta-text h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; color: #fff; }
+    .cta-text p { font-size: 15px; color: rgba(255,255,255,0.75); max-width: 420px; }
+    .btn-white { background: #fff; color: var(--accent); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; padding: 13px 26px; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity 0.15s, transform 0.15s; display: inline-block; }
+    .btn-white:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 40px 32px; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; }
+    .footer-logo-mark { width: 26px; height: 26px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 13px; color: var(--muted); transition: color 0.15s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-note { font-size: 12px; color: var(--faint); text-align: right; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
     @media (max-width: 900px) {
       nav { padding: 0 20px; }
       .hamburger { display: flex; }
-      .nav-links {
-        display: none; flex-direction: column; position: fixed;
-        top: 58px; left: 0; right: 0; background: rgba(8,8,8,0.98);
-        border-bottom: 1px solid var(--border); padding: 16px 20px 24px;
-        gap: 4px; z-index: 99;
-      }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 16px 20px 24px; gap: 4px; z-index: 99; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
       .nav-links.open { display: flex; }
       .nav-links li a { display: block; padding: 10px 12px; font-size: 15px; }
-      .nav-cta { display: inline-block !important; margin-top: 8px; }
+      .hero { grid-template-columns: 1fr; gap: 40px; padding: 56px 20px; }
+      .hero-card { display: none; }
       .stats-inner { flex-wrap: wrap; gap: 24px; justify-content: center; }
       .stat-div { display: none; }
       .categories-grid { grid-template-columns: repeat(2, 1fr); }
@@ -313,73 +181,64 @@
       .article-card.featured { grid-column: span 1; }
       .spotlight-grid { grid-template-columns: 1fr 1fr; }
       .cta-inner { flex-direction: column; padding: 36px; }
+      .cta-text p { max-width: 100%; }
       footer { flex-direction: column; align-items: flex-start; }
-      .footer-disclosure { text-align: left; }
+      .footer-note { text-align: left; }
+      .section, .search-section, .cta-band { padding-left: 20px; padding-right: 20px; }
     }
     @media (max-width: 600px) {
       .categories-grid, .spotlight-grid { grid-template-columns: 1fr 1fr; }
-      .section { padding: 20px 20px 60px; }
-      .cta-band { padding: 0 20px; }
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="logo">
-    <div class="logo-mark">T</div>
-    ToolAdvisor
-  </a>
+  <a href="/" class="logo"><div class="logo-mark">T</div>ToolAdvisor</a>
   <ul class="nav-links" id="nav-links">
     <li><a href="/articles/reviews.html">Reviews</a></li>
     <li><a href="/compare.html">Compare</a></li>
+    <li><a href="/about.html">About</a></li>
     <li><a href="/articles/reviews.html" class="nav-cta">Browse tools →</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
 <section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-badge">
-    <div class="pulse"></div>
-    Built for small businesses and startups
+  <div>
+    <div class="hero-eyebrow">Built for small businesses and startups</div>
+    <h1>The AI tools your<br><em>business actually needs.</em></h1>
+    <p class="hero-sub">Honest, independent reviews of AI tools — no sponsored rankings, no enterprise fluff. Just clear answers that save you time and money.</p>
+    <div class="hero-actions">
+      <a href="/articles/reviews.html" class="btn-primary">Browse all reviews →</a>
+      <a href="#categories" class="btn-secondary">Explore categories</a>
+    </div>
   </div>
-  <h1>The AI tools your<br><span class="accent">business actually needs.</span></h1>
-  <p class="hero-sub">Honest, independent reviews of AI tools for small businesses and startups. No sponsored rankings. No enterprise fluff. Just clear answers that save you time and money.</p>
-  <div class="hero-actions">
-    <a href="/articles/reviews.html" class="btn-primary">Browse all reviews →</a>
-    <a href="#categories" class="btn-secondary">Explore categories</a>
+  <div class="hero-card">
+    <div class="hero-stat">
+      <div><div class="hero-stat-label">Tools reviewed</div><div class="hero-stat-val">120+</div></div>
+      <span class="hero-stat-badge">Growing weekly</span>
+    </div>
+    <div class="hero-stat">
+      <div><div class="hero-stat-label">Categories covered</div><div class="hero-stat-val">18</div></div>
+    </div>
+    <div class="hero-stat">
+      <div><div class="hero-stat-label">Avg. time saved per decision</div><div class="hero-stat-val">3–5 hrs</div></div>
+    </div>
   </div>
 </section>
 
 <div class="stats-bar">
   <div class="stats-inner">
-    <div>
-      <span class="stat-num">120+</span>
-      <div class="stat-label">Tools reviewed</div>
-    </div>
+    <div><span class="stat-num">120+</span><div class="stat-label">Tools reviewed</div></div>
     <div class="stat-div"></div>
-    <div>
-      <span class="stat-num">18</span>
-      <div class="stat-label">Categories</div>
-    </div>
+    <div><span class="stat-num">18</span><div class="stat-label">Categories</div></div>
     <div class="stat-div"></div>
-    <div>
-      <span class="stat-num">4.2 hrs</span>
-      <div class="stat-label">Avg. time saved per decision</div>
-    </div>
+    <div><span class="stat-num">3–5 hrs</span><div class="stat-label">Saved per decision</div></div>
     <div class="stat-div"></div>
-    <div>
-      <span class="stat-num">Weekly</span>
-      <div class="stat-label">New reviews</div>
-    </div>
+    <div><span class="stat-num">Weekly</span><div class="stat-label">New reviews</div></div>
     <div class="stat-div"></div>
-    <div>
-      <span class="stat-num">Free</span>
-      <div class="stat-label">Always</div>
-    </div>
+    <div><span class="stat-num">Free</span><div class="stat-label">Always</div></div>
   </div>
 </div>
 
@@ -433,8 +292,8 @@
 
 <div class="marquee-wrap">
   <div class="marquee-track">
-    <span class="marquee-item">Jasper</span><span class="marquee-item">Copy.ai</span><span class="marquee-item">Notion AI</span><span class="marquee-item">ClickUp</span><span class="marquee-item">Zapier</span><span class="marquee-item">Make</span><span class="marquee-item">Writesonic</span><span class="marquee-item">Grammarly</span><span class="marquee-item">Loom</span><span class="marquee-item">Descript</span><span class="marquee-item">Synthesia</span><span class="marquee-item">HubSpot</span><span class="marquee-item">Tidio</span><span class="marquee-item">FreshBooks</span><span class="marquee-item">QuickBooks</span><span class="marquee-item">Intercom</span><span class="marquee-item">Canva</span><span class="marquee-item">Midjourney</span>
-    <span class="marquee-item">Jasper</span><span class="marquee-item">Copy.ai</span><span class="marquee-item">Notion AI</span><span class="marquee-item">ClickUp</span><span class="marquee-item">Zapier</span><span class="marquee-item">Make</span><span class="marquee-item">Writesonic</span><span class="marquee-item">Grammarly</span><span class="marquee-item">Loom</span><span class="marquee-item">Descript</span><span class="marquee-item">Synthesia</span><span class="marquee-item">HubSpot</span><span class="marquee-item">Tidio</span><span class="marquee-item">FreshBooks</span><span class="marquee-item">QuickBooks</span><span class="marquee-item">Intercom</span><span class="marquee-item">Canva</span><span class="marquee-item">Midjourney</span>
+    <span class="marquee-item">ActiveCampaign</span><span class="marquee-item">ClickUp</span><span class="marquee-item">Apollo.io</span><span class="marquee-item">Zapier</span><span class="marquee-item">HubSpot</span><span class="marquee-item">Tidio</span><span class="marquee-item">Brevo</span><span class="marquee-item">Notion AI</span><span class="marquee-item">Grammarly</span><span class="marquee-item">Loom</span><span class="marquee-item">FreshBooks</span><span class="marquee-item">Canva</span><span class="marquee-item">ElevenLabs</span><span class="marquee-item">Writesonic</span><span class="marquee-item">PandaDoc</span><span class="marquee-item">Reclaim.ai</span><span class="marquee-item">Folk</span><span class="marquee-item">Instantly</span>
+    <span class="marquee-item">ActiveCampaign</span><span class="marquee-item">ClickUp</span><span class="marquee-item">Apollo.io</span><span class="marquee-item">Zapier</span><span class="marquee-item">HubSpot</span><span class="marquee-item">Tidio</span><span class="marquee-item">Brevo</span><span class="marquee-item">Notion AI</span><span class="marquee-item">Grammarly</span><span class="marquee-item">Loom</span><span class="marquee-item">FreshBooks</span><span class="marquee-item">Canva</span><span class="marquee-item">ElevenLabs</span><span class="marquee-item">Writesonic</span><span class="marquee-item">PandaDoc</span><span class="marquee-item">Reclaim.ai</span><span class="marquee-item">Folk</span><span class="marquee-item">Instantly</span>
   </div>
 </div>
 
@@ -444,39 +303,39 @@
     <a href="/articles/reviews.html" class="view-all">All reviews →</a>
   </div>
   <div class="articles-grid" id="articles-grid">
-    <a href="/articles/best-ai-writing-tools-small-business.html" class="article-card featured">
+    <a href="/articles/reviews.html" class="article-card featured">
       <div class="article-pill">Writing</div>
-      <h3>Best AI Writing Tools for Small Businesses (2025)</h3>
-      <p>We tested 11 tools on real tasks — product descriptions, cold emails, blog posts. Honest scores, real pricing, and a clear winner for most use cases.</p>
+      <h3>The Best AI Writing Tools for Small Businesses (2026)</h3>
+      <p>We tested 11 tools on real small-business tasks — product descriptions, cold emails, blog posts. Honest scores, real pricing, and a clear winner for most use cases.</p>
       <div class="article-footer">
-        <div class="article-meta"><span>8 min read</span><span>Nov 2025</span></div>
-        <div class="article-arrow">→</div>
-      </div>
-    </a>
-    <a href="/articles/reviews.html" class="article-card">
-      <div class="article-pill">Finance</div>
-      <h3>Best AI Invoicing Tools for Freelancers</h3>
-      <p>Stop chasing payments manually. These tools automate the whole billing cycle.</p>
-      <div class="article-footer">
-        <div class="article-meta"><span>6 min read</span><span>Nov 2025</span></div>
-        <div class="article-arrow">→</div>
-      </div>
-    </a>
-    <a href="/articles/reviews.html" class="article-card">
-      <div class="article-pill">Automation</div>
-      <h3>Zapier vs Make: Which Is Right for You?</h3>
-      <p>Two very different tools for the same job. Here's the clear-cut way to decide.</p>
-      <div class="article-footer">
-        <div class="article-meta"><span>5 min read</span><span>Oct 2025</span></div>
+        <div class="article-meta"><span>8 min read</span><span>Mar 2026</span></div>
         <div class="article-arrow">→</div>
       </div>
     </a>
     <a href="/articles/reviews.html" class="article-card">
       <div class="article-pill">Email</div>
-      <h3>Best AI Tools for Cold Email Outreach</h3>
-      <p>Personalization at scale without sounding like a robot. Here's what works.</p>
+      <h3>ActiveCampaign vs Brevo for Small Business (2026)</h3>
+      <p>Two strong email platforms, very different strengths. Here's the clear-cut way to choose.</p>
       <div class="article-footer">
-        <div class="article-meta"><span>7 min read</span><span>Oct 2025</span></div>
+        <div class="article-meta"><span>6 min read</span><span>Mar 2026</span></div>
+        <div class="article-arrow">→</div>
+      </div>
+    </a>
+    <a href="/articles/reviews.html" class="article-card">
+      <div class="article-pill">Automation</div>
+      <h3>Zapier vs Make for Small Business Automation (2026)</h3>
+      <p>Two very different tools for the same job. Here's exactly which one fits your business.</p>
+      <div class="article-footer">
+        <div class="article-meta"><span>5 min read</span><span>Mar 2026</span></div>
+        <div class="article-arrow">→</div>
+      </div>
+    </a>
+    <a href="/articles/reviews.html" class="article-card">
+      <div class="article-pill">Sales</div>
+      <h3>Apollo.io Review: Is It Worth It for Small Business? (2026)</h3>
+      <p>500M+ contacts, AI sequencing, and a free tier. Here's what small teams actually get out of it.</p>
+      <div class="article-footer">
+        <div class="article-meta"><span>7 min read</span><span>Mar 2026</span></div>
         <div class="article-arrow">→</div>
       </div>
     </a>
@@ -490,28 +349,19 @@
   </div>
   <div class="spotlight-grid">
     <a href="/articles/reviews.html" class="spotlight-card">
-      <div class="spotlight-header">
-        <span class="spotlight-name">Jasper</span>
-        <span class="spotlight-score">9.1 / 10</span>
-      </div>
-      <p class="spotlight-desc">Best-in-class for marketing teams. Fast, consistent, and deeply integrated with brand voice settings.</p>
-      <div class="tags"><span class="tag">Writing</span><span class="tag">Marketing</span><span class="tag">From $49/mo</span></div>
+      <div class="spotlight-header"><span class="spotlight-name">ActiveCampaign</span><span class="spotlight-score">9.2 / 10</span></div>
+      <p class="spotlight-desc">The most complete email + CRM combo for growing businesses. Automation that actually works out of the box.</p>
+      <div class="tags"><span class="tag">Email</span><span class="tag">CRM</span><span class="tag">From $15/mo</span></div>
     </a>
     <a href="/articles/reviews.html" class="spotlight-card">
-      <div class="spotlight-header">
-        <span class="spotlight-name">Zapier</span>
-        <span class="spotlight-score">8.8 / 10</span>
-      </div>
-      <p class="spotlight-desc">The connective tissue between your apps. If you use 3+ tools daily, it pays for itself in week one.</p>
-      <div class="tags"><span class="tag">Automation</span><span class="tag">Workflows</span><span class="tag">Free tier</span></div>
+      <div class="spotlight-header"><span class="spotlight-name">ClickUp</span><span class="spotlight-score">8.9 / 10</span></div>
+      <p class="spotlight-desc">Project management, docs, and AI in one place. Replaces three tools for most small teams.</p>
+      <div class="tags"><span class="tag">Automation</span><span class="tag">Projects</span><span class="tag">Free tier</span></div>
     </a>
     <a href="/articles/reviews.html" class="spotlight-card">
-      <div class="spotlight-header">
-        <span class="spotlight-name">Notion AI</span>
-        <span class="spotlight-score">8.5 / 10</span>
-      </div>
-      <p class="spotlight-desc">Already in Notion? The AI add-on is a no-brainer. Summarize, write, and query your own docs in seconds.</p>
-      <div class="tags"><span class="tag">Productivity</span><span class="tag">Notes</span><span class="tag">+$10/mo</span></div>
+      <div class="spotlight-header"><span class="spotlight-name">Apollo.io</span><span class="spotlight-score">8.7 / 10</span></div>
+      <p class="spotlight-desc">The most accessible prospecting tool for small sales teams. Strong free tier with real data.</p>
+      <div class="tags"><span class="tag">Sales</span><span class="tag">Prospecting</span><span class="tag">Free tier</span></div>
     </a>
   </div>
 </section>
@@ -520,23 +370,27 @@
   <div class="cta-inner">
     <div class="cta-text">
       <h2>Not sure where to start?</h2>
-      <p>Browse our guides built specifically for small businesses and startups — we've done the testing so you can skip straight to the decision.</p>
+      <p>Browse our guides built specifically for small businesses and startups — we've done the testing so you can skip straight to the right decision.</p>
     </div>
-    <a href="/articles/reviews.html" class="btn-primary" style="white-space:nowrap;flex-shrink:0">Browse all reviews →</a>
+    <a href="/articles/reviews.html" class="btn-white">Browse all reviews →</a>
   </div>
 </div>
 
 <footer>
   <div class="footer-logo"><div class="footer-logo-mark">T</div>ToolAdvisor</div>
-  <div class="footer-note">Independent AI tool reviews · tooladvisor.tech</div>
-  <div class="footer-disclosure">Some links are affiliate links. We earn a small commission at no extra cost to you.</div>
+  <div class="footer-links">
+    <a href="/articles/reviews.html">Reviews</a>
+    <a href="/compare.html">Compare</a>
+    <a href="/about.html">About</a>
+    <a href="mailto:peter@tooladvisor.tech">Contact</a>
+  </div>
+  <div class="footer-note">Some links are affiliate links. We earn a small commission at no extra cost to you.</div>
 </footer>
 
 <script>
   document.getElementById('search-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && this.value.trim()) {
+    if (e.key === 'Enter' && this.value.trim())
       window.location.href = '/articles/reviews.html?q=' + encodeURIComponent(this.value.trim());
-    }
   });
   const hamburger = document.getElementById('hamburger');
   const navLinks = document.getElementById('nav-links');

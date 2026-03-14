@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — ToolAdvisor</title>
+  <meta name="description" content="ToolAdvisor was built by a startup advisor who sees firsthand which AI tools actually help small businesses grow — and which ones don't.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta property="og:title" content="About ToolAdvisor">
+  <meta property="og:description" content="Built by a startup advisor who sees firsthand which AI tools actually help small businesses grow.">
+  <meta property="og:image" content="https://tooladvisor.tech/og-image.png">
+  <meta property="og:url" content="https://tooladvisor.tech/about.html">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --bg2: #f7f6f3; --bg3: #eeede9; --bg4: #e4e2dc;
+      --border: rgba(0,0,0,0.08); --border-hover: rgba(0,0,0,0.16);
+      --text: #1a1916; --muted: #6b6860; --faint: #9b9890;
+      --accent: #0a7a5a; --accent-light: rgba(10,122,90,0.07); --accent-hover: #085e45;
+      --radius: 10px;
+    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 60px;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 800; color: var(--text); text-decoration: none; }
+    .logo-mark { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { font-size: 13px; font-weight: 600; color: var(--muted); padding: 6px 14px; border-radius: 6px; transition: color 0.15s, background 0.15s; text-decoration: none; }
+    .nav-links a:hover { color: var(--text); background: var(--bg2); }
+    .nav-cta { background: var(--accent) !important; color: #fff !important; font-weight: 700 !important; }
+    .nav-cta:hover { background: var(--accent-hover) !important; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .page-wrap { max-width: 720px; margin: 0 auto; padding: 72px 32px 96px; }
+
+    .page-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-light); border: 1px solid rgba(10,122,90,0.15);
+      padding: 5px 12px; border-radius: 99px; margin-bottom: 24px;
+    }
+    .page-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 99px; }
+
+    h1 { font-size: clamp(36px, 5vw, 52px); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 24px; }
+    h1 em { font-style: normal; color: var(--accent); }
+
+    .lead { font-size: 18px; color: var(--muted); line-height: 1.7; margin-bottom: 48px; padding-bottom: 48px; border-bottom: 1px solid var(--border); }
+
+    .about-body h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; margin: 44px 0 14px; }
+    .about-body p { color: var(--muted); margin-bottom: 18px; }
+    .about-body strong { color: var(--text); font-weight: 700; }
+
+    /* Principle cards */
+    .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 32px 0 44px; }
+    .principle-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+    .principle-icon { font-size: 22px; margin-bottom: 10px; }
+    .principle-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .principle-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* Author card */
+    .author-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 32px; display: flex; gap: 28px; align-items: flex-start;
+      margin: 48px 0;
+    }
+    .author-avatar {
+      width: 72px; height: 72px; border-radius: 99px; flex-shrink: 0;
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px;
+    }
+    .author-name { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .author-title { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+    .author-bio { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 16px; }
+    .author-contact { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--accent); background: var(--accent-light); border: 1px solid rgba(10,122,90,0.15); padding: 7px 14px; border-radius: 7px; text-decoration: none; transition: background 0.15s; }
+    .author-contact:hover { background: rgba(10,122,90,0.12); text-decoration: none; }
+
+    /* Disclosure box */
+    .disclosure-box {
+      background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0; padding: 20px 24px; margin: 44px 0;
+    }
+    .disclosure-box h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .disclosure-box p { font-size: 13px; color: var(--muted); line-height: 1.65; margin: 0; }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 40px 32px;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; color: var(--text); text-decoration: none; }
+    .footer-logo-mark { width: 26px; height: 26px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 13px; color: var(--muted); transition: color 0.15s; text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-note { font-size: 12px; color: var(--faint); }
+
+    @media (max-width: 700px) {
+      nav { padding: 0 20px; }
+      .hamburger { display: flex; }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 16px 20px 24px; gap: 4px; z-index: 99; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+      .nav-links.open { display: flex; }
+      .nav-links li a { display: block; padding: 10px 12px; font-size: 15px; }
+      .page-wrap { padding: 56px 20px 80px; }
+      .principles { grid-template-columns: 1fr; }
+      .author-card { flex-direction: column; gap: 20px; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><div class="logo-mark">T</div>ToolAdvisor</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="/articles/reviews.html">Reviews</a></li>
+    <li><a href="/compare.html">Compare</a></li>
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/articles/reviews.html" class="nav-cta">Browse tools →</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">About ToolAdvisor</div>
+  <h1>Built from the inside of <em>real startups.</em></h1>
+  <p class="lead">I advise early-stage startups and small businesses for a living. That means I'm inside dozens of companies every year — watching what they build with, what slows them down, and what actually helps them grow. ToolAdvisor is where I share what I see.</p>
+
+  <div class="about-body">
+    <h2>Why I built this</h2>
+    <p>Every week I'm in conversations with founders and operators asking the same questions: <strong>Which email tool should we use? Is ClickUp worth it for a five-person team? Is this AI writing tool actually saving time, or just creating more editing work?</strong></p>
+    <p>The problem is that most review sites are either written by people who've never used the tools in a real business context, or they're quietly funded by the companies they're recommending. The rankings get gamed, the "honest reviews" are anything but, and small businesses end up paying for tools that don't fit.</p>
+    <p>I started ToolAdvisor because I have a perspective most reviewers don't — I see these tools in action across many different businesses, at different stages, with different teams. I know which tools work for a five-person team and which ones need a full-time admin to manage. I know which free tiers are actually useful and which ones are designed to frustrate you into upgrading.</p>
+
+    <h2>How we evaluate tools</h2>
+
+    <div class="principles">
+      <div class="principle-card">
+        <div class="principle-icon">🎯</div>
+        <div class="principle-title">Real use cases only</div>
+        <div class="principle-desc">Every tool is evaluated on tasks actual small businesses perform — not enterprise features most readers will never use.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-icon">💰</div>
+        <div class="principle-title">Pricing transparency</div>
+        <div class="principle-desc">We call out when free tiers are genuinely useful and when they're bait-and-switch. Real pricing for real business budgets.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-icon">🚫</div>
+        <div class="principle-title">No sponsored rankings</div>
+        <div class="principle-desc">No tool can pay to be featured or ranked higher. Our picks are based on performance, not partnerships.</div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-icon">🔄</div>
+        <div class="principle-title">Updated regularly</div>
+        <div class="principle-desc">AI tools change fast. We refresh articles regularly so you're not making decisions based on year-old information.</div>
+      </div>
+    </div>
+
+    <h2>About the author</h2>
+  </div>
+
+  <div class="author-card">
+    <div class="author-avatar">P</div>
+    <div>
+      <div class="author-name">Peter Potecha</div>
+      <div class="author-title">Startup Advisor & Founder of ToolAdvisor</div>
+      <p class="author-bio">I advise startups and small businesses on operations, growth, and tooling. Over the years I've worked inside enough companies to develop strong opinions about what software actually moves the needle — and what's just noise. ToolAdvisor is my attempt to distil that into something useful for founders and operators who don't have time to evaluate every tool themselves.</p>
+      <a href="mailto:peter@tooladvisor.tech" class="author-contact">✉ peter@tooladvisor.tech</a>
+    </div>
+  </div>
+
+  <div class="disclosure-box">
+    <h3>Affiliate disclosure</h3>
+    <p>Some links on ToolAdvisor are affiliate links — if you purchase a tool through one of our links, we earn a small commission at no extra cost to you. This helps keep the site free. It does not influence our rankings or recommendations. We only recommend tools we would genuinely suggest to a client.</p>
+  </div>
+</div>
+
+<footer>
+  <a href="/" class="footer-logo"><div class="footer-logo-mark">T</div>ToolAdvisor</a>
+  <div class="footer-links">
+    <a href="/articles/reviews.html">Reviews</a>
+    <a href="/compare.html">Compare</a>
+    <a href="/about.html">About</a>
+    <a href="mailto:peter@tooladvisor.tech">Contact</a>
+  </div>
+  <div class="footer-note">Some links are affiliate links. We earn a small commission at no extra cost to you.</div>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+</script>
+</body>
+</html>
