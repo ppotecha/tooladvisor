@@ -239,6 +239,68 @@ def get_current_title(path: Path) -> str:
     match = re.search(r'<h1>(.*?)</h1>', content)
     return match.group(1).strip() if match else ""
 
+def fix_markdown_in_body(content: str) -> str:
+    """Convert any leftover markdown syntax to proper HTML."""
+
+    # **bold text** → <strong>bold text</strong>
+    content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', content)
+
+    # *italic text* → <em>italic text</em> (single asterisk, not already inside a tag)
+    content = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', content)
+
+    # `code` → <code>code</code>
+    content = re.sub(r'`([^`]+)`', r'<code>\1</code>', content)
+
+    # ### Heading → <h3>
+    content = re.sub(r'^### (.+)$', r'<h3>\1</h3>', content, flags=re.MULTILINE)
+
+    # ## Heading → <h2>
+    content = re.sub(r'^## (.+)$', r'<h2>\1</h2>', content, flags=re.MULTILINE)
+
+    # # Heading → <h2> (treat h1 as h2 in body)
+    content = re.sub(r'^# (.+)$', r'<h2>\1</h2>', content, flags=re.MULTILINE)
+
+    # Bare lines starting with - or * that aren't inside a list → wrap in <ul><li>
+    # Find blocks of consecutive bullet lines and wrap them
+    def wrap_bullets(m):
+        lines = m.group(0).strip().split('\n')
+        items = ''.join(f'<li>{re.sub(r"^[-*]\s+", "", l.strip())}</li>' for l in lines if l.strip())
+        return f'<ul>{items}</ul>'
+
+    content = re.sub(r'((?:^[-*] .+\n?)+)', wrap_bullets, content, flags=re.MULTILINE)
+
+    # Numbered lists: "1. item" → <ol><li>
+    def wrap_numbered(m):
+        lines = m.group(0).strip().split('\n')
+        items = ''.join(f'<li>{re.sub(r"^\d+\.\s+", "", l.strip())}</li>' for l in lines if l.strip())
+        return f'<ol>{items}</ol>'
+
+    content = re.sub(r'((?:^\d+\. .+\n?)+)', wrap_numbered, content, flags=re.MULTILINE)
+
+    # Standalone lines that look like plain text paragraphs but aren't wrapped in tags
+    # (only outside of existing HTML tags)
+    lines = content.split('\n')
+    fixed_lines = []
+    for line in lines:
+        stripped = line.strip()
+        # If it's a non-empty line with no HTML tags and not inside a tag context
+        if (stripped
+            and not stripped.startswith('<')
+            and not stripped.endswith('>')
+            and not re.match(r'^<', stripped)
+            and len(stripped) > 40):  # Only wrap substantial text blocks
+            fixed_lines.append(f'<p>{stripped}</p>')
+        else:
+            fixed_lines.append(line)
+    content = '\n'.join(fixed_lines)
+
+    # Clean up any double-wrapped paragraphs
+    content = re.sub(r'<p><p>', '<p>', content)
+    content = re.sub(r'</p></p>', '</p>', content)
+
+    return content
+
+
 def apply_fixes_to_file(path: Path, new_title: str, new_category: str, preview: bool) -> bool:
     content = path.read_text(encoding='utf-8')
     original = content
@@ -257,12 +319,23 @@ def apply_fixes_to_file(path: Path, new_title: str, new_category: str, preview: 
         f'<div class="article-pill">{new_category}</div>',
         content, count=1
     )
-    # Fix meta description og:title
+    # Fix meta og:title
     content = re.sub(
         r'<meta property="og:title" content="[^"]*">',
         f'<meta property="og:title" content="{new_title}">',
         content
     )
+
+    # Fix markdown in article body only (between article-body tags)
+    def fix_body(m):
+        return m.group(0)[:m.start('body') - m.start(0)] + \
+               fix_markdown_in_body(m.group('body')) + \
+               m.group(0)[m.end('body') - m.start(0):]
+
+    body_match = re.search(r'<div class="article-body">(?P<body>.*?)</div>\s*<div class="disclosure"', content, re.DOTALL)
+    if body_match:
+        fixed_body = fix_markdown_in_body(body_match.group('body'))
+        content = content[:body_match.start('body')] + fixed_body + content[body_match.end('body'):]
 
     if not preview and content != original:
         path.write_text(content, encoding='utf-8')

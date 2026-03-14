@@ -121,6 +121,9 @@ Rules:
 - Write 1200-1800 words of body content
 - Return ONLY the HTML body content (no <html>, <head>, <body> tags)
 - Use H2 for major sections, H3 for subsections
+- NEVER use markdown syntax — no **bold**, no *italic*, no # headings, no - bullet lists
+- ALL formatting must be proper HTML tags: <strong>, <em>, <h2>, <h3>, <ul>, <li>, <p>
+- Every paragraph must be wrapped in <p> tags
 """
 
 def make_article_prompt(keyword: str) -> str:
