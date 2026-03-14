@@ -262,18 +262,20 @@ def fix_markdown_in_body(content: str) -> str:
 
     # Bare lines starting with - or * that aren't inside a list → wrap in <ul><li>
     # Find blocks of consecutive bullet lines and wrap them
+    bullet_pat = re.compile(r'^[-*]\s+')
+    num_pat = re.compile(r'^\d+\.\s+')
+
     def wrap_bullets(m):
         lines = m.group(0).strip().split('\n')
-        items = ''.join(f'<li>{re.sub(r"^[-*]\s+", "", l.strip())}</li>' for l in lines if l.strip())
-        return f'<ul>{items}</ul>'
+        items = ''.join('<li>' + bullet_pat.sub('', l.strip()) + '</li>' for l in lines if l.strip())
+        return '<ul>' + items + '</ul>'
 
     content = re.sub(r'((?:^[-*] .+\n?)+)', wrap_bullets, content, flags=re.MULTILINE)
 
-    # Numbered lists: "1. item" → <ol><li>
     def wrap_numbered(m):
         lines = m.group(0).strip().split('\n')
-        items = ''.join(f'<li>{re.sub(r"^\d+\.\s+", "", l.strip())}</li>' for l in lines if l.strip())
-        return f'<ol>{items}</ol>'
+        items = ''.join('<li>' + num_pat.sub('', l.strip()) + '</li>' for l in lines if l.strip())
+        return '<ol>' + items + '</ol>'
 
     content = re.sub(r'((?:^\d+\. .+\n?)+)', wrap_numbered, content, flags=re.MULTILINE)
 
