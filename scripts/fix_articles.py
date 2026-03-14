@@ -2,66 +2,108 @@
 """
 ToolAdvisor — Article Fixer
 ----------------------------
-Fixes titles and categories in existing articles WITHOUT regenerating them.
-Zero API calls. Zero cost. Runs in seconds.
+Fixes titles, capitalisation, and categories in existing articles.
+No full regeneration needed.
 
-Usage:
-  python scripts/fix_articles.py              # Fix all articles
-  python scripts/fix_articles.py --titles     # Fix titles only
-  python scripts/fix_articles.py --categories # Fix categories only
-  python scripts/fix_articles.py --preview    # Preview changes without saving
+Modes:
+  python scripts/fix_articles.py                # Fix capitalisation + categories (free, instant)
+  python scripts/fix_articles.py --rewrite      # Also rewrite titles using Claude API (cheap, ~$0.002/article)
+  python scripts/fix_articles.py --categories   # Fix categories only
+  python scripts/fix_articles.py --preview      # Preview without saving
+
+The --rewrite flag uses Claude to produce natural, well-written titles.
+Without it, capitalisation fixes are applied locally at zero cost.
 """
 
 import re
+import os
 import argparse
+import anthropic
 from pathlib import Path
 from datetime import datetime
 
 ARTICLES_DIR = Path(__file__).parent.parent / "articles"
-INDEX_PATH = ARTICLES_DIR / "reviews.html"
+INDEX_PATH   = ARTICLES_DIR / "reviews.html"
 KEYWORDS_PATH = Path(__file__).parent / "keywords.txt"
+API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
-# ── Title logic (same as generate.py) ─────────────────────────────────────────
+# ── Capitalisation fixes ──────────────────────────────────────────────────────
+# These are applied locally, zero cost.
+# Format: (pattern, replacement) — case-insensitive search, exact replacement
 
-BRANDS = [
-    'ActiveCampaign', 'ClickUp', 'Apollo.io', 'AdCreative.ai', 'Reclaim.ai',
-    'HubSpot', 'Manychat', 'PandaDoc', 'ElevenLabs', 'Murf AI', 'Brevo',
-    'AWeber', 'Reply.io', 'Instantly', 'Leadpages', 'Zapier', 'Tidio',
-    'Intercom', 'FreshBooks', 'QuickBooks', 'Grammarly', 'Notion', 'Loom',
-    'Descript', 'Synthesia', 'Castmagic', 'Brand24', 'Folk', 'Close',
-    'Writesonic', 'Copy.ai', 'ChatGPT', 'OpenAI', 'Canva', 'Midjourney',
-    'ClickFunnels', 'DocuSign',
+CAP_FIXES = [
+    # Acronyms that Python's .title() mangles
+    (r'\bAi\b', 'AI'),
+    (r'\bCrm\b', 'CRM'),
+    (r'\bSeo\b', 'SEO'),
+    (r'\bSms\b', 'SMS'),
+    (r'\bApi\b', 'API'),
+    (r'\bSaas\b', 'SaaS'),
+    (r'\bUi\b', 'UI'),
+    (r'\bUx\b', 'UX'),
+    (r'\bKpi\b', 'KPI'),
+    (r'\bRoi\b', 'ROI'),
+    (r'\bB2b\b', 'B2B'),
+    (r'\bB2c\b', 'B2C'),
+    (r'\bCta\b', 'CTA'),
+    (r'\bErp\b', 'ERP'),
+    (r'\bHr\b', 'HR'),
+    (r'\bIt\b', 'IT'),
+    # Brand names
+    (r'\bActivecampaign\b', 'ActiveCampaign'),
+    (r'\bClickup\b', 'ClickUp'),
+    (r'\bApollo\.Io\b', 'Apollo.io'),
+    (r'\bAdcreative\.Ai\b', 'AdCreative.ai'),
+    (r'\bReclaim\.Ai\b', 'Reclaim.ai'),
+    (r'\bHubspot\b', 'HubSpot'),
+    (r'\bManychat\b', 'ManyChat'),
+    (r'\bPandadoc\b', 'PandaDoc'),
+    (r'\bElevenlabs\b', 'ElevenLabs'),
+    (r'\bMurf Ai\b', 'Murf AI'),
+    (r'\bAweber\b', 'AWeber'),
+    (r'\bReply\.Io\b', 'Reply.io'),
+    (r'\bLeadpages\b', 'Leadpages'),
+    (r'\bFreshbooks\b', 'FreshBooks'),
+    (r'\bQuickbooks\b', 'QuickBooks'),
+    (r'\bClickfunnels\b', 'ClickFunnels'),
+    (r'\bDocusign\b', 'DocuSign'),
+    (r'\bWritesonic\b', 'Writesonic'),
+    (r'\bCopy\.Ai\b', 'Copy.ai'),
+    (r'\bChatgpt\b', 'ChatGPT'),
+    (r'\bOpenai\b', 'OpenAI'),
+    (r'\bMidjourney\b', 'Midjourney'),
+    (r'\bCastmagic\b', 'Castmagic'),
+    (r'\bBrand24\b', 'Brand24'),
+    # Common words that shouldn't be title-cased mid-sentence
+    (r'\bVs\b', 'vs'),
+    (r' And ', ' and '),
+    (r' For ', ' for '),
+    (r' The ', ' the '),
+    (r' Of ', ' of '),
+    (r' In ', ' in '),
+    (r' To ', ' to '),
+    (r' A ', ' a '),
+    (r' An ', ' an '),
+    (r' Or ', ' or '),
+    (r' With ', ' with '),
+    (r' On ', ' on '),
+    (r' At ', ' at '),
+    (r' By ', ' by '),
+    (r' From ', ' from '),
+    (r' Into ', ' into '),
 ]
 
-def fix_title(keyword: str) -> str:
-    title = keyword.strip()
-    kw_lower = title.lower()
+def apply_cap_fixes(title: str) -> str:
+    """Apply all capitalisation fixes to a title string."""
+    result = title
+    for pattern, replacement in CAP_FIXES:
+        result = re.sub(pattern, replacement, result)
+    # Always capitalise first character
+    if result:
+        result = result[0].upper() + result[1:]
+    return result
 
-    comparison_words = ['vs', 'versus', 'compared', 'comparison', 'or ']
-    review_words = ['review', 'is it worth', 'worth it', 'pricing', 'alternative']
-    how_words = ['how to', 'how do', 'what is', 'what are', 'why ', 'when to']
-    already_titled = any(kw_lower.startswith(w) for w in ['best', 'top', 'the ', 'why ', 'how ', 'what ', 'is '])
-
-    is_comparison = any(w in kw_lower for w in comparison_words)
-    is_review = any(w in kw_lower for w in review_words)
-    is_how = any(w in kw_lower for w in how_words)
-
-    if not already_titled and not is_comparison and not is_review and not is_how:
-        title = f"Best {title}"
-
-    titled = title.title()
-    for brand in BRANDS:
-        titled = re.sub(re.escape(brand), brand, titled, flags=re.IGNORECASE)
-    for word in [' Vs ', ' And ', ' For ', ' The ', ' Of ', ' In ', ' To ', ' A ', ' An ', ' Or ']:
-        titled = titled.replace(word, word.lower())
-    titled = titled[0].upper() + titled[1:] if titled else titled
-
-    year = datetime.now().year
-    if str(year) not in titled:
-        titled = f"{titled} ({year})"
-
-    return titled
-
+# ── Category detection ────────────────────────────────────────────────────────
 
 def get_category(keyword: str) -> str:
     kw = keyword.lower()
@@ -97,13 +139,69 @@ def get_category(keyword: str) -> str:
         return 'Writing'
     return 'AI Tools'
 
+# ── Claude title rewriter ─────────────────────────────────────────────────────
+
+def rewrite_titles_with_claude(keyword_title_pairs: list[tuple]) -> dict:
+    """
+    Send all titles to Claude in one batch call.
+    Returns a dict mapping keyword -> new title.
+    Cost: ~$0.002 total for 50 titles.
+    """
+    if not API_KEY:
+        print("Error: ANTHROPIC_API_KEY not set. Run: export ANTHROPIC_API_KEY=your_key")
+        return {}
+
+    client = anthropic.Anthropic(api_key=API_KEY)
+
+    # Build the prompt with all titles at once — one API call for all
+    pairs_text = "\n".join(
+        f'{i+1}. Keyword: "{kw}" | Current title: "{title}"'
+        for i, (kw, title) in enumerate(keyword_title_pairs)
+    )
+
+    prompt = f"""You are writing titles for ToolAdvisor, an AI tool review site for small businesses.
+
+Rewrite each article title to be clear, natural, and compelling. Rules:
+- Keep it concise (under 70 characters including year)
+- For comparison articles (X vs Y): "X vs Y: Which Is Better for Small Businesses? (2026)"
+- For review articles: "[Tool] Review: Is It Worth It for Small Businesses? (2026)"  
+- For best-of lists: "The Best [Category] Tools for Small Businesses (2026)"
+- Always fix capitalisation: AI not Ai, CRM not Crm, SaaS not Saas
+- Keep brand names exactly correct: ActiveCampaign, ClickUp, HubSpot, etc.
+- No clickbait, no ALL CAPS, no exclamation marks
+- Sound like a real editor wrote it, not a bot
+
+Return ONLY a numbered list matching the input numbers, one title per line, nothing else.
+Format exactly: 1. Title Here
+
+{pairs_text}"""
+
+    message = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=2000,
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    response = message.content[0].text
+    results = {}
+
+    for i, (kw, _) in enumerate(keyword_title_pairs):
+        pattern = rf'^{i+1}\.\s+(.+)$'
+        match = re.search(pattern, response, re.MULTILINE)
+        if match:
+            results[kw] = match.group(1).strip()
+        else:
+            results[kw] = None  # Fall back to cap fixes only
+
+    return results
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def slugify(text: str) -> str:
     text = text.lower().strip()
     text = re.sub(r'[^\w\s-]', '', text)
     text = re.sub(r'[\s_-]+', '-', text)
     return text[:80]
-
 
 def load_keywords() -> list[str]:
     keywords = []
@@ -113,89 +211,92 @@ def load_keywords() -> list[str]:
             keywords.append(line)
     return keywords
 
+def find_article_path(keyword: str) -> Path | None:
+    """Find the article file for a given keyword."""
+    # Try a few slug variants
+    candidates = [
+        slugify(keyword),
+        slugify(f"best {keyword}"),
+    ]
+    for slug in candidates:
+        p = ARTICLES_DIR / f"{slug}.html"
+        if p.exists():
+            return p
 
-def fix_article(path: Path, keyword: str, fix_title_flag: bool, fix_cat_flag: bool, preview: bool) -> dict:
+    # Fuzzy match — find file whose name contains key words from the keyword
+    words = [w for w in keyword.lower().split() if len(w) > 3 and w not in
+             ['best', 'tools', 'small', 'business', 'with', 'that', 'from', 'your', 'for']]
+    for f in ARTICLES_DIR.glob("*.html"):
+        if f.name == "reviews.html":
+            continue
+        if all(w in f.stem for w in words[:3]):
+            return f
+
+    return None
+
+def get_current_title(path: Path) -> str:
+    content = path.read_text(encoding='utf-8')
+    match = re.search(r'<h1>(.*?)</h1>', content)
+    return match.group(1).strip() if match else ""
+
+def apply_fixes_to_file(path: Path, new_title: str, new_category: str, preview: bool) -> bool:
     content = path.read_text(encoding='utf-8')
     original = content
-    changes = []
 
-    new_title = fix_title(keyword)
-    new_category = get_category(keyword)
-
-    if fix_title_flag:
-        # Fix <title> tag
-        content = re.sub(
-            r'<title>.*?— ToolAdvisor</title>',
-            f'<title>{new_title} — ToolAdvisor</title>',
-            content
-        )
-        # Fix <h1> tag
-        content = re.sub(
-            r'<h1>(.*?)</h1>',
-            f'<h1>{new_title}</h1>',
-            content,
-            count=1
-        )
-        if content != original:
-            changes.append(f"  Title → {new_title}")
-
-    if fix_cat_flag:
-        # Fix article-pill in the article itself
-        content = re.sub(
-            r'<div class="article-pill">[^<]*</div>',
-            f'<div class="article-pill">{new_category}</div>',
-            content,
-            count=1
-        )
-        if content != original:
-            changes.append(f"  Category → {new_category}")
+    # Fix <title> tag
+    content = re.sub(
+        r'<title>.*?— ToolAdvisor</title>',
+        f'<title>{new_title} — ToolAdvisor</title>',
+        content
+    )
+    # Fix <h1>
+    content = re.sub(r'<h1>.*?</h1>', f'<h1>{new_title}</h1>', content, count=1)
+    # Fix category pill
+    content = re.sub(
+        r'<div class="article-pill">[^<]*</div>',
+        f'<div class="article-pill">{new_category}</div>',
+        content, count=1
+    )
+    # Fix meta description og:title
+    content = re.sub(
+        r'<meta property="og:title" content="[^"]*">',
+        f'<meta property="og:title" content="{new_title}">',
+        content
+    )
 
     if not preview and content != original:
         path.write_text(content, encoding='utf-8')
 
-    return {
-        'keyword': keyword,
-        'slug': path.stem,
-        'title': new_title,
-        'category': new_category,
-        'changed': content != original,
-        'changes': changes,
-    }
-
+    return content != original
 
 def rebuild_reviews_index(articles: list[dict], preview: bool):
-    """Rebuild the cards in reviews.html with correct titles and categories."""
     if not INDEX_PATH.exists():
         print("  Warning: articles/reviews.html not found")
         return
 
     index_html = INDEX_PATH.read_text(encoding='utf-8')
-
     cards_html = ""
+
     for a in articles:
         read_time = "7"
         date = datetime.now().strftime("%b %Y")
+        meta_desc = f"In-depth review of {a['keyword']} for small businesses."
 
-        # Try to extract read time and date from existing article file
         article_path = ARTICLES_DIR / f"{a['slug']}.html"
         if article_path.exists():
             art = article_path.read_text(encoding='utf-8')
             rt = re.search(r'<span>(\d+) min read</span>', art)
-            dt = re.search(r'<span>(\w+ \d{4})</span>', art)
+            dt = re.search(r'<span>(\w+ \d{{4}})</span>', art)
+            meta = re.search(r'<meta name="description" content="([^"]+)"', art)
             if rt: read_time = rt.group(1)
             if dt: date = dt.group(1)
-
-            # Get meta description
-            meta = re.search(r'<meta name="description" content="([^"]+)"', art)
-            meta_desc = meta.group(1) if meta else f"Review of {a['keyword']} for small businesses."
-        else:
-            meta_desc = f"Review of {a['keyword']} for small businesses."
+            if meta: meta_desc = meta.group(1)[:140]
 
         cards_html += f"""
     <a href="/articles/{a['slug']}.html" class="article-card" data-category="{a['category']}">
       <div class="article-pill">{a['category']}</div>
       <h2>{a['title']}</h2>
-      <p>{meta_desc[:140]}</p>
+      <p>{meta_desc}</p>
       <div class="article-footer">
         <div class="article-meta">
           <span>{read_time} min read</span>
@@ -214,70 +315,106 @@ def rebuild_reviews_index(articles: list[dict], preview: bool):
 
     if not preview:
         INDEX_PATH.write_text(new_index, encoding='utf-8')
-        print(f"  Rebuilt reviews index with {len(articles)} articles")
+        print(f"  Rebuilt reviews index ({len(articles)} articles)")
     else:
-        print(f"  [preview] Would rebuild reviews index with {len(articles)} articles")
+        print(f"  [preview] Would rebuild reviews index ({len(articles)} articles)")
 
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Fix articles without regenerating")
-    parser.add_argument('--titles', action='store_true', help='Fix titles only')
-    parser.add_argument('--categories', action='store_true', help='Fix categories only')
-    parser.add_argument('--preview', action='store_true', help='Preview changes without saving')
+    parser = argparse.ArgumentParser(description="Fix article titles and categories without regenerating")
+    parser.add_argument('--rewrite', action='store_true',
+                        help='Use Claude API to rewrite titles naturally (~$0.002 total)')
+    parser.add_argument('--categories', action='store_true',
+                        help='Fix categories only, skip titles')
+    parser.add_argument('--preview', action='store_true',
+                        help='Show what would change without saving')
     args = parser.parse_args()
-
-    fix_title_flag = args.titles or (not args.titles and not args.categories)
-    fix_cat_flag = args.categories or (not args.titles and not args.categories)
 
     if args.preview:
         print("PREVIEW MODE — no files will be changed\n")
 
     keywords = load_keywords()
-    print(f"Loaded {len(keywords)} keywords\n")
+    print(f"Loaded {len(keywords)} keywords")
 
+    # Find all articles and their current titles
+    found = []
+    not_found = []
+    for kw in keywords:
+        path = find_article_path(kw)
+        if path:
+            current_title = get_current_title(path)
+            found.append({'keyword': kw, 'path': path, 'current_title': current_title})
+        else:
+            not_found.append(kw)
+
+    print(f"Found {len(found)} articles, {len(not_found)} not found\n")
+    if not_found:
+        print("Not found:")
+        for kw in not_found:
+            print(f"  - {kw}")
+        print()
+
+    # Step 1: Get new titles
+    new_titles = {}
+
+    if args.rewrite and not args.categories:
+        print("Rewriting titles with Claude API (one batch call)...")
+        pairs = [(a['keyword'], a['current_title']) for a in found]
+        new_titles = rewrite_titles_with_claude(pairs)
+        # Apply cap fixes to any Claude returned titles too
+        for kw in new_titles:
+            if new_titles[kw]:
+                new_titles[kw] = apply_cap_fixes(new_titles[kw])
+        print(f"Got {sum(1 for v in new_titles.values() if v)} rewritten titles\n")
+    elif not args.categories:
+        # Just apply cap fixes locally — free
+        for a in found:
+            new_titles[a['keyword']] = apply_cap_fixes(a['current_title'])
+
+    # Step 2: Apply fixes to each article
     results = []
     changed = 0
-    not_found = 0
 
-    for keyword in keywords:
-        title = fix_title(keyword)
-        slug = slugify(title)
-        article_path = ARTICLES_DIR / f"{slug}.html"
+    for a in found:
+        kw = a['keyword']
+        path = a['path']
 
-        if not article_path.exists():
-            # Try matching by keyword fragments
-            kw_slug = slugify(keyword)
-            candidates = list(ARTICLES_DIR.glob("*.html"))
-            match = None
-            for c in candidates:
-                if c.stem == kw_slug or kw_slug[:30] in c.stem:
-                    match = c
-                    break
-            if match:
-                article_path = match
-            else:
-                print(f"  NOT FOUND: {keyword} (expected {slug}.html)")
-                not_found += 1
-                continue
+        if args.categories:
+            new_title = a['current_title']  # Don't touch titles
+        else:
+            new_title = new_titles.get(kw) or apply_cap_fixes(a['current_title'])
 
-        result = fix_article(article_path, keyword, fix_title_flag, fix_cat_flag, args.preview)
-        results.append(result)
+        new_category = get_category(kw)
 
-        if result['changed']:
-            changed += 1
-            action = "[preview]" if args.preview else "Fixed"
-            print(f"{action}: {article_path.name}")
-            for c in result['changes']:
-                print(c)
+        if args.preview:
+            print(f"  {path.name}")
+            if not args.categories:
+                print(f"    Title:    {a['current_title']}")
+                print(f"    → Becomes: {new_title}")
+            print(f"    Category: {new_category}")
+        else:
+            was_changed = apply_fixes_to_file(path, new_title, new_category, preview=False)
+            if was_changed:
+                changed += 1
+                print(f"  Fixed: {path.name}")
+                if not args.categories:
+                    print(f"    → {new_title}")
+                print(f"    → [{new_category}]")
 
-    print(f"\nDone. {changed} articles updated, {not_found} not found.")
-
-    if results:
-        rebuild_reviews_index(results, args.preview)
+        results.append({
+            'keyword': kw,
+            'slug': path.stem,
+            'title': new_title,
+            'category': new_category,
+        })
 
     if not args.preview:
-        print("\nNext: git add . && git commit -m 'Fix article titles and categories' && git push")
-
+        print(f"\n{changed} articles updated")
+        rebuild_reviews_index(results, preview=False)
+        print("\nNext: git add . && git commit -m 'Fix titles and categories' && git push")
+    else:
+        rebuild_reviews_index(results, preview=True)
 
 if __name__ == "__main__":
     main()
