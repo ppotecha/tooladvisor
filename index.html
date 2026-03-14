@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToolAdvisor — Find the Best AI Tools</title>
+  <meta name="description" content="The definitive guide to AI tools. Honest reviews, real comparisons, and clear recommendations for every use case.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #161616;
+      --bg4: #1e1e1e;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.14);
+      --text: #f0f0f0;
+      --muted: #888;
+      --faint: #555;
+      --green: #00e5a0;
+      --green-dim: rgba(0,229,160,0.08);
+      --green-glow: rgba(0,229,160,0.15);
+      --radius: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* noise */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999; opacity: 0.5;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 58px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(20px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+    .logo-mark {
+      width: 28px; height: 28px; background: var(--green); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #000;
+    }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); padding: 6px 12px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .nav-links a:hover { color: var(--text); background: var(--bg3); }
+    .nav-cta { background: var(--green) !important; color: #000 !important; font-weight: 700 !important; }
+    .nav-cta:hover { opacity: 0.88 !important; background: var(--green) !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 120px 24px 80px; text-align: center; position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; top: 25%; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 400px;
+      background: radial-gradient(ellipse, rgba(0,229,160,0.055) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border); background: var(--bg3);
+      border-radius: 99px; padding: 6px 14px 6px 8px;
+      font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 36px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .pulse {
+      width: 18px; height: 18px; background: var(--green-dim);
+      border: 1px solid rgba(0,229,160,0.3); border-radius: 99px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pulse::after { content: ''; width: 6px; height: 6px; background: var(--green); border-radius: 99px; }
+    .hero h1 {
+      font-size: clamp(52px, 9vw, 96px); font-weight: 800; line-height: 1.0;
+      letter-spacing: -3.5px; max-width: 860px;
+      animation: fadeUp 0.5s ease 0.08s both;
+    }
+    .accent { color: var(--green); display: block; }
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px); color: var(--muted); max-width: 500px;
+      margin: 24px auto 44px; font-weight: 400; line-height: 1.75;
+      animation: fadeUp 0.5s ease 0.16s both;
+    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.5s ease 0.24s both; }
+
+    .btn-primary {
+      background: var(--green); color: #000; font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700; padding: 13px 28px; border-radius: 8px;
+      border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.87; transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--bg3); color: var(--text); font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 600; padding: 13px 28px; border-radius: 8px;
+      border: 1px solid var(--border); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+
+    /* STATS */
+    .stats-bar {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--bg2); padding: 20px 0;
+    }
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 32px;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .stat-num { font-size: 26px; font-weight: 800; letter-spacing: -1px; display: block; }
+    .stat-label { font-size: 12px; color: var(--faint); margin-top: 2px; }
+    .stat-div { width: 1px; height: 36px; background: var(--border); }
+
+    /* SECTIONS */
+    .section { max-width: 1100px; margin: 0 auto; padding: 20px 32px 80px; }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+    .view-all { font-size: 13px; color: var(--green); font-weight: 500; display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
+    .view-all:hover { gap: 8px; }
+
+    /* SEARCH */
+    .search-section { max-width: 1100px; margin: 0 auto; padding: 80px 32px 40px; }
+    .search-wrap { position: relative; max-width: 560px; }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--faint); font-size: 18px; }
+    .search-input {
+      width: 100%; background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px 14px 46px;
+      font-family: 'Syne', sans-serif; font-size: 14px; color: var(--text); outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input::placeholder { color: var(--faint); }
+    .search-input:focus { border-color: rgba(0,229,160,0.4); }
+
+    /* CATEGORIES */
+    .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .cat-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 18px 20px; cursor: pointer;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+    .cat-card:hover { border-color: var(--border-hover); background: var(--bg3); transform: translateY(-2px); }
+    .cat-card:hover .cat-icon-wrap { background: var(--green-dim); border-color: rgba(0,229,160,0.25); }
+    .cat-card:hover .cat-icon-wrap svg { stroke: var(--green); }
+    .cat-icon-wrap {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: var(--bg4); border: 1px solid var(--border);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .cat-icon-wrap svg { width: 16px; height: 16px; stroke: var(--faint); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
+    .cat-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .cat-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-count { font-size: 11px; color: var(--faint); font-family: 'Geist Mono', monospace; }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--bg2); padding: 14px 0; overflow: hidden;
+    }
+    .marquee-track { display: flex; gap: 36px; animation: marquee 28s linear infinite; width: max-content; }
+    .marquee-item {
+      font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--faint);
+      white-space: nowrap; display: flex; align-items: center; gap: 10px;
+    }
+    .marquee-item::after { content: '·'; color: var(--bg4); font-size: 16px; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ARTICLES */
+    .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .article-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 26px; display: flex; flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s; cursor: pointer;
+    }
+    .article-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .article-card.featured { grid-column: span 2; background: var(--bg3); border-color: rgba(0,229,160,0.12); }
+    .article-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 14px;
+    }
+    .article-pill::before { content: ''; width: 4px; height: 4px; background: var(--green); border-radius: 99px; }
+    .article-card h3 { font-size: 17px; font-weight: 700; line-height: 1.35; letter-spacing: -0.3px; margin-bottom: 10px; }
+    .article-card.featured h3 { font-size: 22px; }
+    .article-card p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; margin-bottom: 18px; }
+    .article-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px; border-top: 1px solid var(--border);
+    }
+    .article-meta { font-size: 12px; color: var(--faint); display: flex; gap: 12px; }
+    .article-arrow {
+      width: 28px; height: 28px; background: var(--bg4); border: 1px solid var(--border);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--muted); transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .article-card:hover .article-arrow { background: var(--green); color: #000; border-color: var(--green); }
+
+    /* SPOTLIGHT */
+    .spotlight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .spotlight-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 22px; transition: border-color 0.2s, transform 0.2s; cursor: pointer;
+    }
+    .spotlight-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .spotlight-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .spotlight-name { font-size: 15px; font-weight: 700; }
+    .spotlight-score {
+      font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--green);
+      background: var(--green-dim); border: 1px solid rgba(0,229,160,0.18);
+      padding: 3px 8px; border-radius: 5px;
+    }
+    .spotlight-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 500; color: var(--faint); background: var(--bg3);
+      border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;
+    }
+
+    /* CTA */
+    .cta-band { max-width: 1100px; margin: 0 auto 80px; padding: 0 32px; }
+    .cta-inner {
+      background: var(--bg3); border: 1px solid rgba(0,229,160,0.14); border-radius: 16px;
+      padding: 52px 60px; display: flex; align-items: center; justify-content: space-between;
+      gap: 40px; position: relative; overflow: hidden;
+    }
+    .cta-inner::before {
+      content: ''; position: absolute; top: -80px; right: -80px; width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-text h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.7px; margin-bottom: 10px; }
+    .cta-text p { font-size: 15px; color: var(--muted); max-width: 420px; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border); padding: 40px 32px;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+    .footer-logo-mark {
+      width: 24px; height: 24px; background: var(--green); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #000;
+    }
+    .footer-note { font-size: 12px; color: var(--faint); }
+    .footer-disclosure { font-size: 11px; color: var(--faint); max-width: 360px; text-align: right; line-height: 1.6; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .stats-inner { flex-wrap: wrap; gap: 24px; justify-content: center; }
+      .stat-div { display: none; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .articles-grid { grid-template-columns: 1fr; }
+      .article-card.featured { grid-column: span 1; }
+      .spotlight-grid { grid-template-columns: 1fr 1fr; }
+      .cta-inner { flex-direction: column; padding: 36px; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .footer-disclosure { text-align: left; }
+    }
+    @media (max-width: 600px) {
+      .categories-grid, .spotlight-grid { grid-template-columns: 1fr 1fr; }
+      .section { padding: 20px 20px 60px; }
+      .cta-band { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">T</div>
+    ToolAdvisor
+  </a>
+  <ul class="nav-links">
+    <li><a href="/articles/reviews.html">Reviews</a></li>
+    <li><a href="/articles/reviews.html">Compare</a></li>
+    <li><a href="/articles/reviews.html">Categories</a></li>
+    <li><a href="/articles/reviews.html" class="nav-cta">Browse tools →</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">
+    <div class="pulse"></div>
+    120+ tools reviewed and updated weekly
+  </div>
+  <h1>Stop guessing.<br><span class="accent">Find the right tool.</span></h1>
+  <p class="hero-sub">Honest, independent reviews of AI tools. No sponsored rankings. No hype. Just clear answers for every use case.</p>
+  <div class="hero-actions">
+    <a href="/articles/reviews.html" class="btn-primary">Browse all reviews →</a>
+    <a href="#categories" class="btn-secondary">Explore categories</a>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div>
+      <span class="stat-num">120+</span>
+      <div class="stat-label">Tools reviewed</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <span class="stat-num">18</span>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <span class="stat-num">4.2 hrs</span>
+      <div class="stat-label">Avg. time saved per decision</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <span class="stat-num">Weekly</span>
+      <div class="stat-label">New reviews</div>
+    </div>
+    <div class="stat-div"></div>
+    <div>
+      <span class="stat-num">Free</span>
+      <div class="stat-label">Always</div>
+    </div>
+  </div>
+</div>
+
+<div class="search-section">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input class="search-input" type="text" id="search-input" placeholder="Search tools, categories, use cases...">
+  </div>
+</div>
+
+<section class="section" id="categories">
+  <div class="section-header">
+    <span class="section-label">Browse by category</span>
+    <a href="/articles/reviews.html" class="view-all">View all →</a>
+  </div>
+  <div class="categories-grid">
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Writing & Content</div><div class="cat-count">12 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Invoicing & Finance</div><div class="cat-count">9 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Email & Outreach</div><div class="cat-count">11 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Automation</div><div class="cat-count">8 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Design & Visuals</div><div class="cat-count">10 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Customer Support</div><div class="cat-count">7 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Analytics & Data</div><div class="cat-count">6 reviews</div></div>
+    </a>
+    <a href="/articles/reviews.html" class="cat-card">
+      <div class="cat-icon-wrap"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+      <div class="cat-text"><div class="cat-name">Video & Audio</div><div class="cat-count">8 reviews</div></div>
+    </a>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Jasper</span><span class="marquee-item">Copy.ai</span><span class="marquee-item">Notion AI</span><span class="marquee-item">ClickUp</span><span class="marquee-item">Zapier</span><span class="marquee-item">Make</span><span class="marquee-item">Writesonic</span><span class="marquee-item">Grammarly</span><span class="marquee-item">Loom</span><span class="marquee-item">Descript</span><span class="marquee-item">Synthesia</span><span class="marquee-item">HubSpot</span><span class="marquee-item">Tidio</span><span class="marquee-item">FreshBooks</span><span class="marquee-item">QuickBooks</span><span class="marquee-item">Intercom</span><span class="marquee-item">Canva</span><span class="marquee-item">Midjourney</span>
+    <span class="marquee-item">Jasper</span><span class="marquee-item">Copy.ai</span><span class="marquee-item">Notion AI</span><span class="marquee-item">ClickUp</span><span class="marquee-item">Zapier</span><span class="marquee-item">Make</span><span class="marquee-item">Writesonic</span><span class="marquee-item">Grammarly</span><span class="marquee-item">Loom</span><span class="marquee-item">Descript</span><span class="marquee-item">Synthesia</span><span class="marquee-item">HubSpot</span><span class="marquee-item">Tidio</span><span class="marquee-item">FreshBooks</span><span class="marquee-item">QuickBooks</span><span class="marquee-item">Intercom</span><span class="marquee-item">Canva</span><span class="marquee-item">Midjourney</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-header">
+    <span class="section-label">Latest reviews</span>
+    <a href="/articles/reviews.html" class="view-all">All reviews →</a>
+  </div>
+  <div class="articles-grid" id="articles-grid">
+    <a href="/articles/best-ai-writing-tools-small-business.html" class="article-card featured">
+      <div class="article-pill">Writing</div>
+      <h3>Best AI Writing Tools for Small Businesses (2025)</h3>
+      <p>We tested 11 tools on real tasks — product descriptions, cold emails, blog posts. Honest scores, real pricing, and a clear winner for most use cases.</p>
+      <div class="article-footer">
+        <div class="article-meta"><span>8 min read</span><span>Nov 2025</span></div>
+        <div class="article-arrow">→</div>
+      </div>
+    </a>
+    <a href="/articles/reviews.html" class="article-card">
+      <div class="article-pill">Finance</div>
+      <h3>Best AI Invoicing Tools for Freelancers</h3>
+      <p>Stop chasing payments manually. These tools automate the whole billing cycle.</p>
+      <div class="article-footer">
+        <div class="article-meta"><span>6 min read</span><span>Nov 2025</span></div>
+        <div class="article-arrow">→</div>
+      </div>
+    </a>
+    <a href="/articles/reviews.html" class="article-card">
+      <div class="article-pill">Automation</div>
+      <h3>Zapier vs Make: Which Is Right for You?</h3>
+      <p>Two very different tools for the same job. Here's the clear-cut way to decide.</p>
+      <div class="article-footer">
+        <div class="article-meta"><span>5 min read</span><span>Oct 2025</span></div>
+        <div class="article-arrow">→</div>
+      </div>
+    </a>
+    <a href="/articles/reviews.html" class="article-card">
+      <div class="article-pill">Email</div>
+      <h3>Best AI Tools for Cold Email Outreach</h3>
+      <p>Personalization at scale without sounding like a robot. Here's what works.</p>
+      <div class="article-footer">
+        <div class="article-meta"><span>7 min read</span><span>Oct 2025</span></div>
+        <div class="article-arrow">→</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <span class="section-label">Top-rated this month</span>
+    <a href="/articles/reviews.html" class="view-all">See all →</a>
+  </div>
+  <div class="spotlight-grid">
+    <a href="/articles/reviews.html" class="spotlight-card">
+      <div class="spotlight-header">
+        <span class="spotlight-name">Jasper</span>
+        <span class="spotlight-score">9.1 / 10</span>
+      </div>
+      <p class="spotlight-desc">Best-in-class for marketing teams. Fast, consistent, and deeply integrated with brand voice settings.</p>
+      <div class="tags"><span class="tag">Writing</span><span class="tag">Marketing</span><span class="tag">From $49/mo</span></div>
+    </a>
+    <a href="/articles/reviews.html" class="spotlight-card">
+      <div class="spotlight-header">
+        <span class="spotlight-name">Zapier</span>
+        <span class="spotlight-score">8.8 / 10</span>
+      </div>
+      <p class="spotlight-desc">The connective tissue between your apps. If you use 3+ tools daily, it pays for itself in week one.</p>
+      <div class="tags"><span class="tag">Automation</span><span class="tag">Workflows</span><span class="tag">Free tier</span></div>
+    </a>
+    <a href="/articles/reviews.html" class="spotlight-card">
+      <div class="spotlight-header">
+        <span class="spotlight-name">Notion AI</span>
+        <span class="spotlight-score">8.5 / 10</span>
+      </div>
+      <p class="spotlight-desc">Already in Notion? The AI add-on is a no-brainer. Summarize, write, and query your own docs in seconds.</p>
+      <div class="tags"><span class="tag">Productivity</span><span class="tag">Notes</span><span class="tag">+$10/mo</span></div>
+    </a>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h2>Not sure where to start?</h2>
+      <p>Browse our comparison guides — we've done the legwork so you can skip straight to the decision.</p>
+    </div>
+    <a href="/articles/reviews.html" class="btn-primary" style="white-space:nowrap;flex-shrink:0">Browse all reviews →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo"><div class="footer-logo-mark">T</div>ToolAdvisor</div>
+  <div class="footer-note">Independent AI tool reviews · tooladvisor.tech</div>
+  <div class="footer-disclosure">Some links are affiliate links. We earn a small commission at no extra cost to you.</div>
+</footer>
+
+<script>
+  document.getElementById('search-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) {
+      window.location.href = '/articles/?q=' + encodeURIComponent(this.value.trim());
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Reviews — ToolAdvisor</title>
+  <meta name="description" content="Browse all AI tool reviews and comparisons. Find the best software for writing, invoicing, customer support, automation, and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080808; --bg2: #0f0f0f; --bg3: #161616; --bg4: #1e1e1e;
+      --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.14);
+      --text: #f0f0f0; --muted: #888; --faint: #555;
+      --green: #00e5a0; --green-dim: rgba(0,229,160,0.08); --radius: 10px;
+    }
+    body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999; opacity: 0.5;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 58px; border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.88); backdrop-filter: blur(20px);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; }
+    .logo-mark { width: 28px; height: 28px; background: var(--green); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #000; }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); padding: 6px 12px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .nav-links a:hover { color: var(--text); background: var(--bg3); }
+    .nav-cta { background: var(--green) !important; color: #000 !important; font-weight: 700 !important; }
+
+    .page-header {
+      max-width: 1100px; margin: 0 auto; padding: 100px 32px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 10px; }
+    .page-header p { color: var(--muted); font-size: 15px; }
+
+    /* FILTER TABS */
+    .filters {
+      max-width: 1100px; margin: 0 auto; padding: 24px 32px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+      color: var(--faint); background: var(--bg2); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 99px; cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      color: var(--green); border-color: rgba(0,229,160,0.3); background: var(--green-dim);
+    }
+
+    .articles-section { max-width: 1100px; margin: 0 auto; padding: 0 32px 96px; }
+
+    .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    .article-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 26px; display: flex; flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s; cursor: pointer;
+    }
+    .article-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+
+    .article-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 14px;
+    }
+    .article-pill::before { content: ''; width: 4px; height: 4px; background: var(--green); border-radius: 99px; }
+
+    .article-card h2 { font-size: 17px; font-weight: 700; line-height: 1.35; letter-spacing: -0.3px; margin-bottom: 10px; }
+    .article-card p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; margin-bottom: 18px; }
+
+    .article-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px; border-top: 1px solid var(--border);
+    }
+    .article-meta { font-size: 12px; color: var(--faint); display: flex; gap: 12px; font-family: 'Geist Mono', monospace; }
+    .article-arrow {
+      width: 28px; height: 28px; background: var(--bg4); border: 1px solid var(--border);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--muted); transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .article-card:hover .article-arrow { background: var(--green); color: #000; border-color: var(--green); }
+
+    .empty-state {
+      grid-column: 1 / -1; text-align: center; padding: 80px 20px;
+      color: var(--faint); font-size: 14px;
+    }
+    .empty-state strong { display: block; font-size: 18px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 40px 32px;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+    .footer-logo-mark { width: 24px; height: 24px; background: var(--green); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #000; }
+    .footer-note { font-size: 12px; color: var(--faint); }
+    .footer-disclosure { font-size: 11px; color: var(--faint); max-width: 360px; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .articles-grid { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .footer-disclosure { text-align: left; }
+    }
+    @media (max-width: 600px) {
+      .articles-grid { grid-template-columns: 1fr; }
+      .articles-section, .filters, .page-header { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">T</div>
+    ToolAdvisor
+  </a>
+  <ul class="nav-links">
+    <li><a href="/articles/reviews.html">Reviews</a></li>
+    <li><a href="/articles/reviews.html">Compare</a></li>
+    <li><a href="/articles/reviews.html">Categories</a></li>
+    <li><a href="/" class="nav-cta">← Home</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>All Reviews</h1>
+  <p>Honest comparisons and reviews of AI tools — updated weekly.</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+  <button class="filter-btn" onclick="filterCards('Writing', this)">Writing</button>
+  <button class="filter-btn" onclick="filterCards('Finance', this)">Finance</button>
+  <button class="filter-btn" onclick="filterCards('Email', this)">Email</button>
+  <button class="filter-btn" onclick="filterCards('Automation', this)">Automation</button>
+  <button class="filter-btn" onclick="filterCards('Design', this)">Design</button>
+  <button class="filter-btn" onclick="filterCards('Customer Support', this)">Customer Support</button>
+  <button class="filter-btn" onclick="filterCards('Analytics', this)">Analytics</button>
+  <button class="filter-btn" onclick="filterCards('Video', this)">Video</button>
+</div>
+
+<div class="articles-section">
+  <div class="articles-grid" id="articles-grid">
+    <!-- Generated articles will be listed here automatically by generate.py -->
+    <div class="empty-state">
+      <strong>No articles yet</strong>
+      Run <code>python scripts/generate.py --batch scripts/keywords.txt</code> to generate your first batch.
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo"><div class="footer-logo-mark">T</div>ToolAdvisor</div>
+  <div class="footer-note">Independent AI tool reviews · tooladvisor.tech</div>
+  <div class="footer-disclosure">Some links are affiliate links. We earn a small commission at no extra cost to you.</div>
+</footer>
+
+<script>
+  function filterCards(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.article-card').forEach(card => {
+      const pill = card.querySelector('.article-pill');
+      if (!pill) return;
+      const match = cat === 'all' || pill.textContent.toLowerCase().includes(cat.toLowerCase());
+      card.style.display = match ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

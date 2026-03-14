@@ -1,0 +1,47 @@
+# ToolAdvisor — Starter Keyword List
+# These are low-competition, buyer-intent keywords for the AI tools niche.
+# Each will become one article. Add/remove as you like.
+# Run: python scripts/generate.py --batch scripts/keywords.txt
+
+# --- Writing & Content ---
+best AI writing tools for small business owners
+best AI tools for writing product descriptions
+AI copywriting tools for freelancers
+Jasper vs Copy.ai for small business
+best AI blog writing tools 2025
+
+# --- Invoicing & Finance ---
+best AI invoicing tools for freelancers
+AI tools for small business accounting
+best AI tools for expense tracking
+FreshBooks vs QuickBooks AI features compared
+AI tools for self-employed bookkeeping
+
+# --- Email & Outreach ---
+best AI email writing tools for sales
+AI tools for cold email outreach
+best AI tools for email marketing small business
+AI tools for writing follow-up emails
+
+# --- Customer Support ---
+best AI chatbot tools for small business websites
+AI tools for customer support automation
+Tidio vs Intercom for small business
+best AI tools for live chat under $50 per month
+
+# --- Design & Video ---
+best AI image generation tools for small business marketing
+AI tools for creating social media graphics
+best AI video tools for small business
+
+# --- Operations & Automation ---
+best AI automation tools for small business
+Zapier vs Make for small business automation
+best AI scheduling tools for consultants
+AI tools for project management small teams
+
+# --- Comparisons (high converting) ---
+best AI tools for solopreneurs
+best AI tools for service businesses
+AI tools that save the most time for small business
+cheapest AI tools for small business worth paying for
