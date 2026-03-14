@@ -30,29 +30,52 @@ SITEMAP_PATH = Path(__file__).parent.parent / "sitemap.xml"
 SITE_URL = "https://tooladvisor.tech"
 
 # ── Affiliate link map ─────────────────────────────────────────────────────────
-# Add your real affiliate links here after signing up to each program.
-# Sign up at: jasper.com/affiliates, copy.ai (ShareASale), zapier.com/partners,
-#             notion.so/affiliates, clickup.com/affiliates, etc.
+# Replace YOURCODE placeholders with real links once approved.
 
 AFFILIATE_LINKS = {
-    "Jasper": "https://jasper.ai?fpr=YOURCODE",
-    "Copy.ai": "https://copy.ai?via=YOURCODE",
-    "Notion AI": "https://notion.so?r=YOURCODE",
+    # PartnerStack programs (applied)
     "ClickUp": "https://clickup.com?fp_ref=YOURCODE",
-    "Zapier": "https://zapier.com/referral/YOURCODE",
-    "Make": "https://make.com?pc=YOURCODE",
-    "Writesonic": "https://writesonic.com?fpr=YOURCODE",
-    "Rytr": "https://rytr.me/?via=YOURCODE",
-    "Descript": "https://descript.com?lmref=YOURCODE",
-    "Synthesia": "https://synthesia.io?via=YOURCODE",
-    "FreshBooks": "https://freshbooks.com?ref=YOURCODE",
-    "QuickBooks": "https://quickbooks.intuit.com",
-    "HubSpot": "https://hubspot.com?ref=YOURCODE",
+    "ActiveCampaign": "https://activecampaign.com/?_r=YOURCODE",
+    "Apollo.io": "https://apollo.io/?ref=YOURCODE",
+    "Brevo": "https://brevo.com/?ref=YOURCODE",
     "Tidio": "https://tidio.com?r=YOURCODE",
-    "Intercom": "https://intercom.com",
-    "Loom": "https://loom.com/referral/YOURCODE",
+    "Instantly": "https://instantly.ai/?ref=YOURCODE",
+    "Reply.io": "https://reply.io/?ref=YOURCODE",
+    "Reclaim.ai": "https://reclaim.ai/?ref=YOURCODE",
+    "AdCreative.ai": "https://adcreative.ai/?ref=YOURCODE",
+    "Folk": "https://folk.app/?ref=YOURCODE",
+    "AWeber": "https://aweber.com/?ref=YOURCODE",
+    "Leadpages": "https://leadpages.com/?ref=YOURCODE",
+    "Manychat": "https://manychat.com/?ref=YOURCODE",
+    "PandaDoc": "https://pandadoc.com/?ref=YOURCODE",
+    "Brand24": "https://brand24.com/?ref=YOURCODE",
+    "Castmagic": "https://castmagic.io/?ref=YOURCODE",
+    "ElevenLabs": "https://elevenlabs.io/?ref=YOURCODE",
+    "Close": "https://close.com/?ref=YOURCODE",
+    "Murf AI": "https://murf.ai/?ref=YOURCODE",
+    # Other strong affiliate programs
+    "Writesonic": "https://writesonic.com?fpr=YOURCODE",
+    "Copy.ai": "https://copy.ai?via=YOURCODE",
+    "Zapier": "https://zapier.com/referral/YOURCODE",
+    "HubSpot": "https://hubspot.com?ref=YOURCODE",
+    "Notion AI": "https://notion.so?r=YOURCODE",
     "Grammarly": "https://grammarly.com/referral/YOURCODE",
+    "Loom": "https://loom.com/referral/YOURCODE",
+    "FreshBooks": "https://freshbooks.com?ref=YOURCODE",
 }
+
+# ── Priority tools to always feature ──────────────────────────────────────────
+# These are tools we have (or are applying for) affiliate programs with.
+# The article generator will always try to include at least 2-3 of these.
+
+PRIORITY_TOOLS = [
+    "ClickUp", "ActiveCampaign", "Apollo.io", "Brevo", "Tidio",
+    "Instantly", "Reply.io", "Reclaim.ai", "AdCreative.ai", "Folk",
+    "AWeber", "Leadpages", "Manychat", "PandaDoc", "Brand24",
+    "Castmagic", "ElevenLabs", "Close", "Murf AI", "Writesonic",
+    "Copy.ai", "Zapier", "HubSpot", "Notion AI", "Grammarly",
+    "Loom", "FreshBooks",
+]
 
 # ── Prompts ────────────────────────────────────────────────────────────────────
 
@@ -64,6 +87,12 @@ Your articles are:
 - Structured for skimmability (clear H2s, H3s, bullet points)
 - Honest — include genuine pros and cons, not just hype
 - Conversion-focused — guide readers toward a clear recommendation
+
+IMPORTANT — Tool selection rules:
+- Always feature at least 2-3 tools from the PRIORITY LIST provided in the article prompt
+- Priority tools should be recommended naturally and genuinely where they fit the topic
+- You may include 1-2 other well-known tools for comparison and credibility, but priority tools must always be present
+- Never force a priority tool into an article where it genuinely doesn't fit the topic — relevance always wins
 
 Write in HTML using these components:
 
@@ -95,14 +124,20 @@ Rules:
 """
 
 def make_article_prompt(keyword: str) -> str:
+    # Pick the most relevant priority tools to suggest for this keyword
     return f"""Write a comprehensive, SEO-optimized review article for this keyword:
 
 "{keyword}"
 
-Use real tool names, real pricing (as of 2025), and real affiliate links from this map where relevant:
+PRIORITY TOOLS — you must feature at least 2-3 of these where relevant to the topic:
+{', '.join(PRIORITY_TOOLS)}
+
+Use real affiliate links from this map where the tool appears:
 {json.dumps(AFFILIATE_LINKS, indent=2)}
 
-Structure the article well. Include a TL;DR, 3-5 tool cards, a comparison table, and a strong conclusion with a recommendation."""
+For any tool not in the affiliate links map above, link directly to the tool's homepage.
+
+Structure the article well. Include a TL;DR, 3-5 tool cards, a comparison table, and a strong conclusion with a recommendation. Priority tools should be recommended naturally — only include them if they genuinely fit the article topic."""
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -207,16 +242,16 @@ def update_articles_index(articles: list[dict]):
     cards_html = ""
     for a in articles:
         cards_html += f"""
-    <a href="/articles/{a['slug']}.html" class="article-card">
-      <div class="article-card-body">
-        <div class="article-tag">{a['category']}</div>
-        <h2>{a['title']}</h2>
-        <p>{a['meta_description']}</p>
+    <a href="/articles/{a['slug']}.html" class="article-card" data-category="{a['category']}">
+      <div class="article-pill">{a['category']}</div>
+      <h2>{a['title']}</h2>
+      <p>{a['meta_description']}</p>
+      <div class="article-footer">
         <div class="article-meta">
           <span>{a['read_time']} min read</span>
           <span>{a['date']}</span>
         </div>
-        <span class="read-link">Read review →</span>
+        <div class="article-arrow">→</div>
       </div>
     </a>"""
 
